@@ -1,1 +1,1 @@
-# tofino-proto-type
+# tofino-prototype
