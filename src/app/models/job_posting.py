@@ -1,10 +1,23 @@
 import uuid
+from dataclasses import dataclass
+from datetime import datetime
 
 from app.db_operator import db
 
 
+@dataclass
 class JobPosting(db.Model):
     """ Data model of Job Postings """
+    id: str
+    url: str
+    source: str
+    title: str
+    company_id: str
+    company_name: str
+    location_string: str
+    posted_datetime: str
+    posted_datetime: datetime
+    job_description: str
 
     __tablename__ = "testing"
 
@@ -23,9 +36,9 @@ class JobPosting(db.Model):
         return cls.query.get(job_posting_id)
 
     @classmethod
-    def create(cls, url, **kwargs):
+    def create(cls, **kwargs):
         job_posting_id = uuid.uuid4()
-        job_posting = cls(id=job_posting_id, url=url, **kwargs)
+        job_posting = cls(id=str(job_posting_id), **kwargs)
         db.session.add(job_posting)
         db.session.commit()
         return job_posting
