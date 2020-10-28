@@ -15,7 +15,6 @@ class JobPosting(db.Model):
     company_id: str
     company_name: str
     location_string: str
-    posted_datetime: str
     posted_datetime: datetime
     job_description: str
 
