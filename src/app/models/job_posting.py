@@ -30,6 +30,16 @@ class JobPosting(db.Model):
     posted_datetime = db.Column(db.DateTime)
     job_description = db.Column(db.String(10000))
 
+    def __init__(self, **kwargs):
+        for k, v in kwargs.items():
+            if isinstance(v, str):
+                try:
+                    self.__setattr__(k, datetime.strptime(v, "%Y-%m-%dT%H:%M:%S%z"))
+                except ValueError:  # This exception is expected if the string is not a ISO8601 datetime
+                    self.__setattr__(k, v)
+            else:
+                self.__setattr__(k, v)
+
     @classmethod
     def get(cls, job_posting_id):
         return cls.query.get(job_posting_id)
