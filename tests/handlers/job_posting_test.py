@@ -92,7 +92,7 @@ class JobPostingHandlerTest(TestCase):
         mock_delete.assert_called_once_with(self.test_job_posting.id)
 
     @patch('app.models.job_posting.JobPosting.delete')
-    def test_update_should_return_json_string_of_job_posting(self, mock_delete):
+    def test_delete_should_return_json_string_of_job_posting(self, mock_delete):
         mock_delete.return_value = self.test_job_posting
         result = JobPostingHandler.delete(self.test_job_posting.id)
         self.assertEqual(self.test_job_posting, json.loads(result, object_hook=lambda d: JobPosting(**d)))
