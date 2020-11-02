@@ -16,3 +16,8 @@ def run(ctx):
 def test(ctx):
     os.environ['PYTHONPATH'] = os.path.join(BASE_DIR, 'src')
     ctx.run('python -m unittest discover -s tests -p *_test.py')
+
+
+@task()
+def pylint(ctx):
+    ctx.run('flake8 . --count --select=E9,F4,F63,F7,F82 --show-source --statistics')
