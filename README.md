@@ -1,3 +1,3 @@
 # tofino
 
-![CI/CD](https://github.com/glucn/tofino/workflows/Python%20application/badge.svg?branch=master)
+![CI/CD](https://github.com/glucn/tofino/workflows/build/badge.svg?branch=master)
