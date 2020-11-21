@@ -11,6 +11,11 @@ APP.config['SQLALCHEMY_ECHO'] = True
 db.init_app(APP)
 
 
+@APP.route('/healthz', method=['GET'])
+def shallow_healthy_check():
+    return '{}'
+
+
 @APP.route('/api/v1/jobPosting/<job_posting_id>', methods=['GET'])
 def get(job_posting_id):
     return JobPostingHandler.get(job_posting_id)
