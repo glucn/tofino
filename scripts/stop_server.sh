@@ -1,2 +1,2 @@
 #!/bin/bash
-pkill supervisord
+pkill supervisord || true
