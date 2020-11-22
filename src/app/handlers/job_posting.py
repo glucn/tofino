@@ -15,6 +15,8 @@ class JobPostingHandler(BaseHandler):
     API handler for JobPosting
     """
 
+    JSON_HEADER = {'Content-Type': 'application/json'}
+
     @classmethod
     def get(cls, job_posting_id):
         if not job_posting_id:
@@ -24,7 +26,7 @@ class JobPostingHandler(BaseHandler):
         if not job_posting:
             flask.abort(404, f"job posting with id {job_posting_id} cannot be found")
 
-        return json.dumps(dataclasses.asdict(job_posting), default=json_serialize)
+        return json.dumps(dataclasses.asdict(job_posting), default=json_serialize), 200, cls.JSON_HEADER
 
     @classmethod
     def create(cls, **kwargs):
@@ -33,7 +35,7 @@ class JobPostingHandler(BaseHandler):
         if not job_posting:
             flask.abort(500, "Internal Failure")
 
-        return json.dumps(dataclasses.asdict(job_posting), default=json_serialize)
+        return json.dumps(dataclasses.asdict(job_posting), default=json_serialize), 200, cls.JSON_HEADER
 
     @classmethod
     def update(cls, job_posting_id, **kwargs):
@@ -45,7 +47,7 @@ class JobPostingHandler(BaseHandler):
         if not job_posting:
             flask.abort(500, "Internal Failure")
 
-        return json.dumps(dataclasses.asdict(job_posting), default=json_serialize)
+        return json.dumps(dataclasses.asdict(job_posting), default=json_serialize), 200, cls.JSON_HEADER
 
     @classmethod
     def delete(cls, job_posting_id):
@@ -56,4 +58,4 @@ class JobPostingHandler(BaseHandler):
         if not job_posting:
             flask.abort(500, "Internal Failure")
 
-        return json.dumps(dataclasses.asdict(job_posting), default=json_serialize)
+        return json.dumps(dataclasses.asdict(job_posting), default=json_serialize), 200, cls.JSON_HEADER

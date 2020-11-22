@@ -11,9 +11,9 @@ APP.config['SQLALCHEMY_ECHO'] = True
 db.init_app(APP)
 
 
-@APP.route('/healthz', method=['GET'])
+@APP.route('/healthz', methods=['GET'])
 def shallow_healthy_check():
-    return '{}'
+    return '{}', 200, {'Content-Type': 'application/json'}
 
 
 @APP.route('/api/v1/jobPosting/<job_posting_id>', methods=['GET'])
@@ -35,3 +35,7 @@ def update(job_posting_id):
 @APP.route('/api/v1/jobPosting/<job_posting_id>', methods=['DELETE'])
 def delete(job_posting_id):
     return JobPostingHandler.delete(job_posting_id)
+
+
+if __name__ == '__main__':
+    APP.run(host="0.0.0.0")
