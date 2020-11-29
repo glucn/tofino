@@ -1,9 +1,17 @@
+import os
+from logging.config import fileConfig
+
 from flask import Flask, request
 
 from app.db_operator.mysql_client import MySQLClient, db
 from app.handlers.job_posting import JobPostingHandler
 
+if not os.path.exists("logs/"):
+    os.makedirs("logs/")
+
 APP = Flask(__name__)
+fileConfig('logging.cfg')
+
 APP.config['SQLALCHEMY_DATABASE_URI'] = MySQLClient.get_sqlalchemy_connection_string()
 APP.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 APP.config['SQLALCHEMY_ECHO'] = True
