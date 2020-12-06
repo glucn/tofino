@@ -51,7 +51,7 @@ class BaseScraperWorker:
         logging.info(f'Received message {message}')
         bucket_name, object_key = self._parse_message(message.body)
 
-        logging.info(f'Downloading file from bucket {bucket_name}, object key {object_key}...')
+        logging.info(f'Downloading file from bucket "{bucket_name}", object key "{object_key}"...')
         file_str = S3.download_file_str(bucket_name, object_key)
 
         logging.info('Scraping file...')
