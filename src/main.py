@@ -5,6 +5,7 @@ from flask import Flask, request
 
 from app.db_operator.mysql_client import MySQLClient, db
 from app.handlers.job_posting import JobPostingHandler
+from app.scraper import ScraperManager
 
 if not os.path.exists("logs/"):
     os.makedirs("logs/")
@@ -46,4 +47,5 @@ def delete(job_posting_id):
 
 
 if __name__ == '__main__':
+    ScraperManager.start()
     APP.run(host="0.0.0.0")
