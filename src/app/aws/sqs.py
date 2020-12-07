@@ -122,3 +122,31 @@ class SQS:
         except ClientError as e:
             logging.error(e)
             raise e
+
+    @classmethod
+    def send_message(cls, queue_url: str, message_body: str) -> None:
+        """
+        Delivers a message to the specified queue.
+
+        :param queue_url: The URL of the Amazon SQS queue to which a message is sent.
+        :param message_body: The message to send. The minimum size is one character. The maximum size is 256 KB.
+        TODO: validate the message length
+
+        :return:
+        """
+
+        if not queue_url:
+            raise ValueError(u'queue_url is required')
+
+        if not message_body:
+            raise ValueError(u'message_body is required')
+
+        try:
+            cls._get_client().send_message(
+                QueueUrl=queue_url,
+                MessageBody=message_body,
+            )
+
+        except ClientError as e:
+            logging.error(e)
+            raise e
