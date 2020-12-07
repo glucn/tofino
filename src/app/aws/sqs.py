@@ -1,4 +1,5 @@
 import hashlib
+import logging
 from typing import List
 
 import boto3
@@ -93,6 +94,7 @@ class SQS:
                 return []
 
         except ClientError as e:
+            logging.error(e)
             raise e
 
     @classmethod
@@ -118,4 +120,5 @@ class SQS:
             )
 
         except ClientError as e:
+            logging.error(e)
             raise e

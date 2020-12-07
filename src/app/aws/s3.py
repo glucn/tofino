@@ -1,4 +1,5 @@
 import io
+import logging
 
 import boto3
 from botocore.exceptions import ClientError
@@ -52,6 +53,7 @@ class S3:
             return byte_value.decode(encoding)
 
         except ClientError as e:
+            logging.error(e)
             raise e
 
     @classmethod

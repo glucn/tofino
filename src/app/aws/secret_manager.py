@@ -1,3 +1,5 @@
+import logging
+
 import boto3
 import base64
 from botocore.exceptions import ClientError
@@ -38,4 +40,5 @@ class SecretManager:
                 return decoded_binary_secret
 
         except ClientError as e:
+            logging.error(e)
             raise e
