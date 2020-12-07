@@ -1,6 +1,7 @@
 import threading
 
 from app.scraper.linkedin_job_posting import LinkedInJobPostingScraper
+from app.scraper.linkedin_job_search_result import LinkedInJobSearchResultScraper
 
 
 class ScraperManager:
@@ -8,7 +9,11 @@ class ScraperManager:
 
     @classmethod
     def start(cls):
-        scraper = LinkedInJobPostingScraper()
+        scrapers = [
+            LinkedInJobPostingScraper(),
+            LinkedInJobSearchResultScraper(),
+        ]
 
-        t = threading.Thread(target=scraper.run, daemon=True)
-        t.start()
+        for scraper in scrapers:
+            t = threading.Thread(target=scraper.run, daemon=True)
+            t.start()

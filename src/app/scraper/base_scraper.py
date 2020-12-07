@@ -9,18 +9,18 @@ from app.aws.s3 import S3
 from app.aws.sqs import Message
 from app.scraper.exceptions import RetryableException, NotRetryableException, MalFormedMessageException
 
-_SLEEP_SECONDS = 60
-
 
 class BaseScraperWorker:
     """ Base scraper worker """
     _is_running = False
     _worker_name: str
+    _sleep_seconds: int
     _queue_url: str
 
-    def __init__(self, worker_name, queue_url):
+    def __init__(self, worker_name: str, queue_url: str, sleep_seconds: int = 60):
         self._worker_name = worker_name
         self._queue_url = queue_url
+        self._sleep_seconds = sleep_seconds
 
     def run(self):
         logging.info(f'[{self._worker_name}] Worker starts')
@@ -33,7 +33,7 @@ class BaseScraperWorker:
                 try:
                     self._process_message(message)
                 except RetryableException:
-                    time.sleep(_SLEEP_SECONDS)
+                    time.sleep(self._sleep_seconds)
                     continue
                 except NotRetryableException as ex:
                     logging.error(ex)
@@ -43,7 +43,7 @@ class BaseScraperWorker:
             else:
                 logging.info(f'[{self._worker_name}] No message received')
 
-            time.sleep(_SLEEP_SECONDS)
+            time.sleep(self._sleep_seconds)
 
         logging.info(f'[{self._worker_name}] Worker stops')
 
