@@ -1,9 +1,11 @@
+import json
 import logging
 from urllib.parse import urlparse, urlunparse
 
 from bs4 import BeautifulSoup
 
 import config
+from app.aws import SQS
 from app.scraper.base_scraper import BaseScraperWorker
 
 
@@ -12,7 +14,7 @@ class LinkedInJobSearchResultScraper(BaseScraperWorker):
 
     def __init__(self):
         sleep_seconds = 3600  # 1H
-        super().__init__('LinkedInJobSearchResultScraper', config.LINKEDIN_JOB_SEARCH_RESULT_SQS_QUEUE_URL, sleep_seconds)
+        super().__init__('LinkedInJobSearchResultScraper', config.SCRAPER_LINKEDIN_JOB_SEARCH_RESULT_SQS_QUEUE_URL, sleep_seconds)
 
     @classmethod
     def _remove_queries(cls, url: str):
@@ -24,6 +26,7 @@ class LinkedInJobSearchResultScraper(BaseScraperWorker):
         urls = [self._remove_queries(x['href']) for x in soup.find_all('a', class_='result-card__full-card-link')]
 
         for url in urls:
-            logging.info(f'[LinkedInJobSearchResultScraper] Sending message for URL "{url}"')
-            # TODO: send message in the SQS queue
+            logging.info(f'[LinkedInJobSearchResultScraper] Sending message for URL "{url}"...')
 
+            message = json.dumps({'url': url})
+            SQS.send_message(config.CRAWLER_LINKEDIN_JOB_POSTING_SQS_QUEUE_URL, message)

@@ -8,7 +8,7 @@ class LinkedInJobPostingScraper(BaseScraperWorker):
     """ Scrape LinkedIn's job posting page """
 
     def __init__(self):
-        super().__init__('LinkedInJobPostingScraper', config.LINKEDIN_JOB_POSTING_SQS_QUEUE_URL)
+        super().__init__('LinkedInJobPostingScraper', config.SCRAPER_LINKEDIN_JOB_POSTING_SQS_QUEUE_URL)
 
     def _scrape(self, file: str):
         # TODO: implement me
