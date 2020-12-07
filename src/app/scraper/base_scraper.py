@@ -23,11 +23,11 @@ class BaseScraperWorker:
         self._queue_url = queue_url
 
     def run(self):
-        logging.info(f'{self._worker_name} starts')
+        logging.info(f'[{self._worker_name}] Worker starts')
         self._is_running = True
 
         while self._is_running:
-            logging.info('Polling message...')
+            logging.info(f'[{self._worker_name}] Polling message...')
             message = self._poll_message()
             if message:
                 try:
@@ -38,23 +38,23 @@ class BaseScraperWorker:
                 except NotRetryableException as ex:
                     logging.error(ex)
                 finally:
-                    logging.info(f'Deleting message {message}...')
+                    logging.info(f'[{self._worker_name}] Deleting message {message}...')
                     self._delete_message(message.receipt_handle)
             else:
-                logging.info('No message received')
+                logging.info(f'[{self._worker_name}] No message received')
 
             time.sleep(_SLEEP_SECONDS)
 
-        logging.info(f'{self._worker_name} stops')
+        logging.info(f'[{self._worker_name}] Worker stops')
 
     def _process_message(self, message: Message):
-        logging.info(f'Received message {message}')
+        logging.info(f'[{self._worker_name}] Received message {message}')
         bucket_name, object_key = self._parse_message(message.body)
 
-        logging.info(f'Downloading file from bucket "{bucket_name}", object key "{object_key}"...')
+        logging.info(f'[{self._worker_name}] Downloading file from bucket "{bucket_name}", object key "{object_key}"...')
         file_str = S3.download_file_str(bucket_name, object_key)
 
-        logging.info('Scraping file...')
+        logging.info(f'[{self._worker_name}] Scraping file...')
         self._scrape(file_str)
 
     def _poll_message(self) -> Optional[Message]:
@@ -62,7 +62,7 @@ class BaseScraperWorker:
         if len(messages) == 1:
             return messages[0]
         elif len(messages) > 1:
-            raise Exception(f'Polling for maximum 1 message, but got {messages}')
+            raise Exception(f'[{self._worker_name}] Polling for maximum 1 message, but got {messages}')
         else:
             return None
 
