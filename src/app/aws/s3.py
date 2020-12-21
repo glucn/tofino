@@ -57,13 +57,28 @@ class S3:
             raise e
 
     @classmethod
-    def put_object(cls, bucket: str, key: str, body: object) -> None:
+    def upload_file_obj(cls, file: object, bucket: str, key: str) -> None:
         """
-        Adds an object to a bucket. TODO: implement me
+        Upload a file-like object to S3.
+        https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/s3.html#S3.Client.upload_fileobj
 
+        :param file:
         :param bucket:
         :param key:
-        :param body:
         :return:
         """
-        pass
+        if not file:
+            raise ValueError(u'file is require')
+
+        if not bucket:
+            raise ValueError(u'bucket is required')
+
+        if not key:
+            raise ValueError(u'key is required')
+
+        try:
+            cls._get_client().upload_fileobj(file, bucket, key)
+
+        except ClientError as e:
+            logging.error(e)
+            raise e

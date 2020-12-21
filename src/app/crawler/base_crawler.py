@@ -1,25 +1,28 @@
 import json
 import logging
 import time
+import uuid
 from typing import Optional
-from urllib.parse import unquote_plus
 
-from app.aws import SQS
+import requests
+
 from app.aws.s3 import S3
-from app.aws.sqs import Message
-from app.exceptions.exceptions import RetryableException, NotRetryableException, MalFormedMessageException
+from app.aws.sqs import Message, SQS
+from app.exceptions import RetryableException, NotRetryableException, MalFormedMessageException
 
 
-class BaseScraperWorker:
-    """ Base scraper worker """
+class BaseCrawlerWorker:
+    """ Base crawler worker  """
     _is_running = False
     _worker_name: str
     _sleep_seconds: int
     _queue_url: str
+    _upload_bucket: str
 
-    def __init__(self, worker_name: str, queue_url: str, sleep_seconds: int = 60):
+    def __init__(self, worker_name: str, queue_url: str, upload_bucket: str, sleep_seconds: int = 60):
         self._worker_name = worker_name
         self._queue_url = queue_url
+        self._upload_bucket = upload_bucket
         self._sleep_seconds = sleep_seconds
 
     def run(self):
@@ -49,13 +52,19 @@ class BaseScraperWorker:
 
     def _process_message(self, message: Message):
         logging.info(f'[{self._worker_name}] Received message {message}')
-        bucket_name, object_key = self._parse_message(message.body)
+        url = self._parse_message(message.body)
 
-        logging.info(f'[{self._worker_name}] Downloading file from bucket "{bucket_name}", object key "{object_key}"...')
-        file_str = S3.download_file_str(bucket_name, object_key)
+        response = requests.get(url)
+        if response.status_code != 200:
+            logging.error(f'Getting URL "{url}" resulted in status code {response.status_code}, full response "{response}"')
+            raise Exception
 
-        logging.info(f'[{self._worker_name}] Scraping file...')
-        self._scrape(file_str)
+        file_key = str(uuid.uuid4())
+
+        logging.info(
+            f'[{self._worker_name}] Uploading file downloaded from "{url}" to bucket "{self._upload_bucket}", ' +
+            'object key "{file_key}"...')
+        S3.upload_file_obj(response.raw, self._upload_bucket, file_key)
 
     def _poll_message(self) -> Optional[Message]:
         messages = SQS.receive_message(self._queue_url, 1)
@@ -71,20 +80,10 @@ class BaseScraperWorker:
 
     def _parse_message(self, message_body: str) -> (str, str):
         """
-        Parse the S3 notification message to get the bucket name and object key
-        https://docs.aws.amazon.com/AmazonS3/latest/dev/notification-content-structure.html
+        Parse the message
         """
         body_obj = json.loads(message_body)
-        if 'Records' not in body_obj or len(body_obj['Records']) == 0 or len(body_obj['Records']) > 1:
+        if 'url' not in body_obj:
             raise MalFormedMessageException(f'Message {message_body} is malformed')
 
-        record = body_obj['Records'][0]
-
-        if 's3' not in record or 'bucket' not in record['s3'] or 'name' not in record['s3']['bucket'] \
-                or 'object' not in record['s3'] or 'key' not in record['s3']['object']:
-            raise MalFormedMessageException(f'Record {record} is malformed')
-
-        return record['s3']['bucket']['name'], unquote_plus(record['s3']['object']['key'])
-
-    def _scrape(self, file: str):
-        pass
+        return body_obj['url']
