@@ -13,6 +13,7 @@ if not os.path.exists("logs/"):
 
 APP = Flask(__name__)
 fileConfig('logging.cfg')
+# basicConfig(level=logging.DEBUG)
 
 APP.config['SQLALCHEMY_DATABASE_URI'] = MySQLClient.get_sqlalchemy_connection_string()
 APP.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False

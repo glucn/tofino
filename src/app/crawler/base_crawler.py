@@ -2,6 +2,7 @@ import json
 import logging
 import time
 import uuid
+from io import BytesIO
 from typing import Optional
 
 import requests
@@ -54,17 +55,21 @@ class BaseCrawlerWorker:
         logging.info(f'[{self._worker_name}] Received message {message}')
         url = self._parse_message(message.body)
 
-        response = requests.get(url)
-        if response.status_code != 200:
-            logging.error(f'Getting URL "{url}" resulted in status code {response.status_code}, full response "{response}"')
-            raise Exception
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36',
+            'Content-Type': 'text/html',
+        }
 
-        file_key = str(uuid.uuid4())
+        with requests.get(url, stream=True, allow_redirects=True, headers=headers) as response:
+            if response.status_code != 200:
+                logging.error(f'Getting URL "{url}" resulted in status code {response.status_code}')
+                raise Exception
 
-        logging.info(
-            f'[{self._worker_name}] Uploading file downloaded from "{url}" to bucket "{self._upload_bucket}", ' +
-            'object key "{file_key}"...')
-        S3.upload_file_obj(response.raw, self._upload_bucket, file_key)
+            file_key = str(uuid.uuid4())
+
+            logging.info(f'[{self._worker_name}] Uploading file from "{url}" to "{self._upload_bucket}/{file_key}"...')
+            S3.upload_file_obj(BytesIO(response.content), self._upload_bucket, file_key)
+            logging.info(f'[{self._worker_name}] Uploaded file to "{self._upload_bucket}/{file_key}"')
 
     def _poll_message(self) -> Optional[Message]:
         messages = SQS.receive_message(self._queue_url, 1)
