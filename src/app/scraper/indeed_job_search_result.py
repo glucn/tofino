@@ -19,9 +19,8 @@ class IndeedJobSearchResultScraper(BaseScraperWorker):
     @classmethod
     def _parse_url(cls, url: str):
         uu = list(urlparse(url))
-        query_parameters = parse_qs(uu[4], keep_blank_values=True)
-        jk = query_parameters['jk']
-        uu[4] = urlencode({'jk': jk}, doseq=True)
+        uu[0] = 'https'  # scheme
+        uu[1] = 'ca.indeed.com'  # netloc, the link in the search results page are all relative
         return urlunparse(uu)
 
     def _scrape(self, file: str):
