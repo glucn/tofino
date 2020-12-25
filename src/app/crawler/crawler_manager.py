@@ -1,6 +1,7 @@
 import threading
 
 # from app.crawler.linkedin_job_posting import LinkedInJobPostingCrawler
+from app.crawler.indeed_job_posting import IndeedJobPostingCrawler
 
 
 class CrawlerManager:
@@ -10,6 +11,7 @@ class CrawlerManager:
     def start(cls):
         crawlers = [
             # LinkedInJobPostingCrawler(),
+            IndeedJobPostingCrawler(),
         ]
 
         for crawlers in crawlers:

@@ -9,10 +9,10 @@ def remove_queries(url):
 
 
 def indeed_parse_url(url: str):
-        uu = list(urlparse(url))
-        uu[0] = 'https'  # scheme
-        uu[1] = 'ca.indeed.com'  # netloc, the link in the search results page are all relative
-        return urlunparse(uu)
+    uu = list(urlparse(url))
+    uu[0] = 'https'  # scheme
+    uu[1] = 'ca.indeed.com'  # netloc, the link in the search results page are all relative
+    return urlunparse(uu)
 
 
 def parse_search_results(html_path):
