@@ -1,6 +1,6 @@
 import json
 import logging
-from urllib.parse import urlparse, urlunparse, urlencode, parse_qs
+from urllib.parse import urlparse, urlunparse
 
 from bs4 import BeautifulSoup
 
