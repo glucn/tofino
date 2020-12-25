@@ -1,7 +1,7 @@
 import threading
 
-from app.scraper.linkedin_job_posting import LinkedInJobPostingScraper
-from app.scraper.linkedin_job_search_result import LinkedInJobSearchResultScraper
+# from app.scraper.linkedin_job_posting import LinkedInJobPostingScraper
+# from app.scraper.linkedin_job_search_result import LinkedInJobSearchResultScraper
 
 
 class ScraperManager:
