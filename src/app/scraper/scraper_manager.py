@@ -10,8 +10,8 @@ class ScraperManager:
     @classmethod
     def start(cls):
         scrapers = [
-            LinkedInJobPostingScraper(),
-            LinkedInJobSearchResultScraper(),
+            # LinkedInJobPostingScraper(),
+            # LinkedInJobSearchResultScraper(),
         ]
 
         for scraper in scrapers:

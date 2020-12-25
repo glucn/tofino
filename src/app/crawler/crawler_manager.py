@@ -9,7 +9,7 @@ class CrawlerManager:
     @classmethod
     def start(cls):
         crawlers = [
-            LinkedInJobPostingCrawler(),
+            # LinkedInJobPostingCrawler(),
         ]
 
         for crawlers in crawlers:
