@@ -25,7 +25,7 @@ class IndeedJobSearchResultScraper(BaseScraperWorker):
 
     def _scrape(self, file: str):
         soup = BeautifulSoup(file, 'html.parser')
-        urls = [self._parse_url(x['href']) for x in soup.find_all('a', class_='turnstileLink')]
+        urls = [self._parse_url(x['href']) for x in soup.find_all('a', class_='jobtitle turnstileLink')]
 
         for url in urls:
             logging.info(f'[IndeedJobSearchResultScraper] Sending message for URL "{url}"...')
