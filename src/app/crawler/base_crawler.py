@@ -65,7 +65,7 @@ class BaseCrawlerWorker:
                 logging.error(f'Getting URL "{url}" resulted in status code {response.status_code}')
                 raise Exception
 
-            file_key = str(uuid.uuid4())
+            file_key = f'{str(uuid.uuid4())}.html'
 
             logging.info(f'[{self._worker_name}] Uploading file from "{url}" to "{self._upload_bucket}/{file_key}"...')
             S3.upload_file_obj(BytesIO(response.content), self._upload_bucket, file_key)
