@@ -12,11 +12,9 @@ from app.scraper.base_scraper import BaseScraperWorker
 class IndeedJobPostingScraper(BaseScraperWorker):
     """ Scrape Indeed's job posting page """
 
-    _SOURCE = 'ca.indeed.com'
-    _URL = 'https://ca.indeed.com'  # URL cannot be null in DB schema TODO: retrieve the real URL instead of this
-
     def __init__(self):
-        super().__init__('IndeedJobPostingScraper', config.SCRAPER_INDEED_JOB_POSTING_SQS_QUEUE_URL)
+        sleep_seconds = 30
+        super().__init__('IndeedJobPostingScraper', config.SCRAPER_INDEED_JOB_POSTING_SQS_QUEUE_URL, sleep_seconds)
 
     def _scrape(self, file: str, file_name: str):
         soup = BeautifulSoup(file, 'html.parser')
