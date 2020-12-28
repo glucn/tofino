@@ -32,7 +32,7 @@ def parse_single_posting(html_path):
     job_title = soup.find("h1", class_="jobsearch-JobInfoHeader-title").string
     job_description = '\n'.join([x for x in soup.find("div", class_="jobsearch-jobDescriptionText").strings])
     company_name = soup.find("div", class_="jobsearch-InlineCompanyRating").contents[0].string
-    location_string = soup.find("div", class_="jobsearch-InlineCompanyRating").contents[3].string
+    location_string = soup.find("div", class_="jobsearch-InlineCompanyRating").contents[-1].string
 
     print(job_title)
     print(company_name)
@@ -44,4 +44,4 @@ def parse_single_posting(html_path):
 if __name__ == '__main__':
 
     # parse_search_results("indeed_search_result.html")
-    parse_single_posting("indeed_posting.html")
+    parse_single_posting("200a440b-aebc-48cf-87cd-f67f8738fffa.html")
