@@ -13,8 +13,7 @@ class LinkedInJobSearchResultScraper(BaseScraperWorker):
     """ Scrape LinkedIn's job search result page """
 
     def __init__(self):
-        sleep_seconds = 1800  # 30 minutes
-        super().__init__('LinkedInJobSearchResultScraper', config.SCRAPER_LINKEDIN_JOB_SEARCH_RESULT_SQS_QUEUE_URL, sleep_seconds)
+        super().__init__('LinkedInJobSearchResultScraper', config.SCRAPER_LINKEDIN_JOB_SEARCH_RESULT_SQS_QUEUE_URL)
 
     @classmethod
     def _remove_queries(cls, url: str):

@@ -13,8 +13,7 @@ class IndeedJobSearchResultScraper(BaseScraperWorker):
     """ Scrape Indeed's job search result page """
 
     def __init__(self):
-        sleep_seconds = 1800  # 30 minutes
-        super().__init__('IndeedJobSearchResultScraper', config.SCRAPER_INDEED_JOB_SEARCH_RESULT_SQS_QUEUE_URL, sleep_seconds)
+        super().__init__('IndeedJobSearchResultScraper', config.SCRAPER_INDEED_JOB_SEARCH_RESULT_SQS_QUEUE_URL)
 
     @classmethod
     def _parse_url(cls, url: str):
