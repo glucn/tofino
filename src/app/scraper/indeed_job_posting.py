@@ -26,7 +26,7 @@ class IndeedJobPostingScraper(BaseScraperWorker):
         company_name = soup.find("div", class_="jobsearch-InlineCompanyRating").contents[0].string
         location_string = soup.find("div", class_="jobsearch-InlineCompanyRating").contents[-1].string
 
-        logging.info(f'[{self._worker_name}] Creating JobPosting record...')
+        logging.info(f'[{self._worker_name}] Updating JobPosting record...')
         logging.info(f'[{self._worker_name}] Data: {job_title}, {company_name}, {location_string}')
 
         session = MySQLClient.get_session()

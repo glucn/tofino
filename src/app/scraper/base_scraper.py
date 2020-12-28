@@ -58,7 +58,7 @@ class BaseScraperWorker:
         file_str = S3.download_file_str(bucket_name, object_key)
 
         logging.info(f'[{self._worker_name}] Scraping file "{object_key}"...')
-        self._scrape(file_str)
+        self._scrape(file_str, object_key)
 
     def _poll_message(self) -> Optional[Message]:
         messages = SQS.receive_message(self._queue_url, 1)
