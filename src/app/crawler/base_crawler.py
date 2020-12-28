@@ -7,6 +7,7 @@ import requests
 
 from app.aws.sqs import Message, SQS
 from app.exceptions import RetryableException, NotRetryableException, MalFormedMessageException
+from app.utils.sleep_with_jitter import sleep_with_jitter
 
 
 class BaseCrawlerWorker:
@@ -34,7 +35,7 @@ class BaseCrawlerWorker:
                 try:
                     self._process_message(message)
                 except RetryableException:
-                    time.sleep(self._sleep_seconds)
+                    sleep_with_jitter(self._sleep_seconds)
                     continue
                 except NotRetryableException as ex:
                     logging.error(ex)
@@ -44,7 +45,7 @@ class BaseCrawlerWorker:
             else:
                 logging.info(f'[{self._worker_name}] No message received')
 
-            time.sleep(self._sleep_seconds)
+            sleep_with_jitter(self._sleep_seconds)
 
         logging.info(f'[{self._worker_name}] Worker stops')
 

@@ -9,6 +9,7 @@ from app.aws import SQS
 from app.aws.s3 import S3
 from app.aws.sqs import Message
 from app.exceptions.exceptions import RetryableException, NotRetryableException, MalFormedMessageException
+from app.utils.sleep_with_jitter import sleep_with_jitter
 
 
 class BaseScraperWorker:
@@ -46,7 +47,7 @@ class BaseScraperWorker:
             else:
                 logging.info(f'[{self._worker_name}] No message received')
 
-            time.sleep(self._sleep_seconds)
+            sleep_with_jitter(self._sleep_seconds)
 
         logging.info(f'[{self._worker_name}] Worker stops')
 
