@@ -14,7 +14,10 @@ def _parse_posted_datetime(soup: BeautifulSoup) -> datetime:
     footers = soup.find("div", class_="jobsearch-JobMetadataFooter").stripped_strings
     for s in footers:
         if s.endswith(" days ago"):
-            n = int(s.replace(" days ago", ""))
+            if s.replace(" days ago", "") == "30+":
+                n = 30
+            else:
+                n = int(s.replace(" days ago", ""))
             dt = datetime.now() - timedelta(days=n)
             return dt.replace(hour=0, minute=0, second=0, microsecond=0)
         if s == "1 day ago":
