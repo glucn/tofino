@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime, timedelta
 
 from bs4 import BeautifulSoup
 
@@ -7,6 +8,23 @@ from app.db_operator.mysql_client import MySQLClient
 from app.exceptions import RetryableException
 from app.models.job_posting import JobPosting
 from app.scraper.base_scraper import BaseScraperWorker
+
+
+def _parse_posted_datetime(soup: BeautifulSoup) -> datetime:
+    footers = soup.find("div", class_="jobsearch-JobMetadataFooter").stripped_strings
+    for s in footers:
+        if s.endswith(" days ago"):
+            n = int(s.replace(" days ago", ""))
+            dt = datetime.now() - timedelta(days=n)
+            return dt.replace(hour=0, minute=0, second=0, microsecond=0)
+        if s == "1 day ago":
+            dt = datetime.now() - timedelta(days=1)
+            return dt.replace(hour=0, minute=0, second=0, microsecond=0)
+        if s == "Today":
+            dt = datetime.now()
+            return dt.replace(hour=0, minute=0, second=0, microsecond=0)
+
+    return datetime.now()
 
 
 class IndeedJobPostingScraper(BaseScraperWorker):
@@ -23,6 +41,7 @@ class IndeedJobPostingScraper(BaseScraperWorker):
         job_description = '\n'.join([x for x in soup.find("div", class_="jobsearch-jobDescriptionText").strings])
         company_name = soup.find("div", class_="jobsearch-InlineCompanyRating").contents[0].string
         location_string = soup.find("div", class_="jobsearch-InlineCompanyRating").contents[-1].string
+        posted_datetime = _parse_posted_datetime(soup)
 
         logging.info(f'[{self._worker_name}] Updating JobPosting record...')
         logging.info(f'[{self._worker_name}] Data: {job_title}, {company_name}, {location_string}')
@@ -36,6 +55,7 @@ class IndeedJobPostingScraper(BaseScraperWorker):
                 company_name=company_name,
                 location_string=location_string,
                 job_description=job_description,
+                posted_datetime=posted_datetime,
             )
             session.commit()
             logging.info(f'[{self._worker_name}] Updated JobPosting record {job_posting.id}')

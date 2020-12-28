@@ -1,4 +1,3 @@
-import logging
 import os
 from logging.config import fileConfig
 
@@ -12,8 +11,8 @@ if not os.path.exists("logs/"):
     os.makedirs("logs/")
 
 APP = Flask(__name__)
-# fileConfig('logging.cfg')
-logging.basicConfig(level=logging.DEBUG)
+fileConfig('logging.cfg')
+# logging.basicConfig(level=logging.DEBUG)
 
 
 @APP.route('/healthz', methods=['GET'])
