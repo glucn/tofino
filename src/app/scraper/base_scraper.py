@@ -57,7 +57,7 @@ class BaseScraperWorker:
         logging.info(f'[{self._worker_name}] Downloading file from bucket "{bucket_name}", object key "{object_key}"...')
         file_str = S3.download_file_str(bucket_name, object_key)
 
-        logging.info(f'[{self._worker_name}] Scraping file...')
+        logging.info(f'[{self._worker_name}] Scraping file "{object_key}"...')
         self._scrape(file_str)
 
     def _poll_message(self) -> Optional[Message]:
