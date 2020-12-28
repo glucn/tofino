@@ -38,7 +38,7 @@ class MySQLClient:
     # "mysql://user:password@hostname/dbname"
     @classmethod
     def get_sqlalchemy_connection_string(cls):
-        return "mysql://{}:{}@{}/{}".format(
+        return "mysql://{}:{}@{}/{}?charset=utf8".format(
             cls._get_secret().user, cls._get_secret().password, config.MYSQL_HOST, config.MYSQL_DB_NAME
         )
 
