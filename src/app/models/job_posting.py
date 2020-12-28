@@ -23,6 +23,8 @@ class JobPosting(Base):
     location_string: str
     posted_datetime: datetime
     job_description: str
+    created_datetime: datetime
+    updated_datetime: datetime
 
     __tablename__ = "testing"
 
@@ -36,6 +38,8 @@ class JobPosting(Base):
     location_string = Column(String(256))
     posted_datetime = Column(DateTime)
     job_description = Column(String(10000))
+    created_datetime = Column(DateTime)
+    updated_datetime = Column(DateTime)
 
     def __init__(self, **kwargs):
         for k, v in kwargs.items():
@@ -61,6 +65,8 @@ class JobPosting(Base):
             kwargs['id'] = str(uuid.uuid4())
 
         job_posting = cls(**kwargs)
+        job_posting.created_datetime = datetime.now()
+
         session.add(job_posting)
         return job_posting
 
@@ -78,6 +84,7 @@ class JobPosting(Base):
             else:
                 setattr(job_posting, k, v)
 
+        job_posting.updated_datetime = datetime.now()
         session.add(job_posting)
         return job_posting
 
