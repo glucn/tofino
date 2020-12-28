@@ -10,6 +10,6 @@ class LinkedInJobPostingScraper(BaseScraperWorker):
     def __init__(self):
         super().__init__('LinkedInJobPostingScraper', config.SCRAPER_LINKEDIN_JOB_POSTING_SQS_QUEUE_URL)
 
-    def _scrape(self, file: str):
+    def _scrape(self, file: str, file_name: str):
         # TODO: implement me
         logging.info('LinkedInJobPostingScraper is scraping')

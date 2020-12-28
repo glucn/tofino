@@ -13,6 +13,7 @@ Base = declarative_base()
 class JobPosting(Base):
     """ Data model of Job Postings """
     id: str
+    external_id: str
     url: str
     source: str
     title: str
@@ -24,7 +25,8 @@ class JobPosting(Base):
 
     __tablename__ = "testing"
 
-    id = Column(String(50), primary_key=True)
+    id = Column(String(256), primary_key=True)
+    external_id = Column(String(256))
     url = Column(String(256))
     source = Column(String(256))
     title = Column(String(256))

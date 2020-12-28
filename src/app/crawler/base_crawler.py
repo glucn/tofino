@@ -1,7 +1,6 @@
 import json
 import logging
 import time
-import uuid
 from io import BytesIO
 from typing import Optional
 
@@ -9,7 +8,9 @@ import requests
 
 from app.aws.s3 import S3
 from app.aws.sqs import Message, SQS
+from app.db_operator.mysql_client import MySQLClient
 from app.exceptions import RetryableException, NotRetryableException, MalFormedMessageException
+from app.models.job_posting import JobPosting
 
 
 class BaseCrawlerWorker:
@@ -65,11 +66,36 @@ class BaseCrawlerWorker:
                 logging.error(f'Getting URL "{url}" resulted in status code {response.status_code}')
                 raise Exception
 
-            file_key = f'{str(uuid.uuid4())}.html'
+            logging.info(f'[{self._worker_name}] Original URL {url}, final URL {response.url}')
 
-            logging.info(f'[{self._worker_name}] Uploading file from "{url}" to "{self._upload_bucket}/{file_key}"...')
-            S3.upload_file_obj(BytesIO(response.content), self._upload_bucket, file_key)
-            logging.info(f'[{self._worker_name}] Uploaded file to "{self._upload_bucket}/{file_key}"')
+            session = MySQLClient.get_session()
+            try:
+                job_posting = JobPosting.create(
+                    session=session,
+                    source=self._get_job_posting_source(),
+                    url=response.url,
+                    external_id=self._parse_external_id(response.url)
+                )
+
+                file_key = job_posting.id
+                logging.info(
+                    f'[{self._worker_name}] Uploading file from "{url}" to "{self._upload_bucket}/{file_key}"...')
+                S3.upload_file_obj(BytesIO(response.content), self._upload_bucket, file_key)
+                logging.info(f'[{self._worker_name}] Uploaded file to "{self._upload_bucket}/{file_key}"')
+
+                session.commit()
+                logging.info(f'[{self._worker_name}] Created JobPosting record {job_posting.id}')
+
+            except Exception as ex:
+                logging.error(f'[{self._worker_name}] Error processing, rolling back...', ex)
+                session.rollback()
+                raise RetryableException
+            except:
+                logging.error(f'[{self._worker_name}] Unexpected exception, rolling back...')
+                session.rollback()
+                raise RetryableException
+            finally:
+                session.close()
 
     def _poll_message(self) -> Optional[Message]:
         messages = SQS.receive_message(self._queue_url, 1)
@@ -92,3 +118,9 @@ class BaseCrawlerWorker:
             raise MalFormedMessageException(f'Message {message_body} is malformed')
 
         return body_obj['url']
+
+    def _get_job_posting_source(self) -> str:
+        pass
+
+    def _parse_external_id(self, final_url: str) -> str:
+        pass

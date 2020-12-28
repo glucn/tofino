@@ -18,7 +18,7 @@ class IndeedJobPostingScraper(BaseScraperWorker):
     def __init__(self):
         super().__init__('IndeedJobPostingScraper', config.SCRAPER_INDEED_JOB_POSTING_SQS_QUEUE_URL)
 
-    def _scrape(self, file: str):
+    def _scrape(self, file: str, file_name: str):
         soup = BeautifulSoup(file, 'html.parser')
 
         job_title = soup.find("h1", class_="jobsearch-JobInfoHeader-title").string
@@ -31,19 +31,18 @@ class IndeedJobPostingScraper(BaseScraperWorker):
 
         session = MySQLClient.get_session()
         try:
-            job_posting = JobPosting.create(
+            job_posting = JobPosting.update(
                 session=session,
-                source=self._SOURCE,
-                url=self._URL,
+                job_posting_id=file_name,
                 title=job_title,
                 company_name=company_name,
                 location_string=location_string,
                 job_description=job_description,
             )
             session.commit()
-            logging.info(f'[{self._worker_name}] Created JobPosting record {job_posting.id}')
+            logging.info(f'[{self._worker_name}] Updated JobPosting record {job_posting.id}')
         except Exception as ex:
-            logging.error(f'[{self._worker_name}] Error creating JobPosting record, rolling back...', ex)
+            logging.error(f'[{self._worker_name}] Error updating JobPosting record, rolling back...', ex)
             session.rollback()
             raise RetryableException
         except:

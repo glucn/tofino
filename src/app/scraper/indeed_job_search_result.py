@@ -23,7 +23,7 @@ class IndeedJobSearchResultScraper(BaseScraperWorker):
         uu[1] = 'ca.indeed.com'  # netloc, the link in the search results page are all relative
         return urlunparse(uu)
 
-    def _scrape(self, file: str):
+    def _scrape(self, file: str, file_name: str):
         soup = BeautifulSoup(file, 'html.parser')
         urls = [self._parse_url(x['href']) for x in soup.find_all('a', class_='jobtitle turnstileLink')]
 

@@ -21,7 +21,7 @@ class LinkedInJobSearchResultScraper(BaseScraperWorker):
         uu = urlparse(url)
         return urlunparse(uu._replace(query=''))
 
-    def _scrape(self, file: str):
+    def _scrape(self, file: str, file_name: str):
         soup = BeautifulSoup(file, 'html.parser')
         urls = [self._remove_queries(x['href']) for x in soup.find_all('a', class_='result-card__full-card-link')]
 

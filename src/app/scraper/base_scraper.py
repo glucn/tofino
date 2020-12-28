@@ -89,5 +89,5 @@ class BaseScraperWorker:
 
         return record['s3']['bucket']['name'], unquote_plus(record['s3']['object']['key'])
 
-    def _scrape(self, file: str):
+    def _scrape(self, file: str, file_name: str):
         pass

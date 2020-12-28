@@ -10,3 +10,7 @@ class LinkedInJobPostingCrawler(BaseCrawlerWorker):
                          config.CRAWLER_LINKEDIN_JOB_POSTING_SQS_QUEUE_URL,
                          config.BUCKET_LINKEDIN_JOB_POSTING,
                          10)
+
+    def _parse_external_id(self, final_url: str) -> str:
+        # TODO: implement me
+        return ''
