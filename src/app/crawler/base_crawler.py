@@ -1,16 +1,12 @@
 import json
 import logging
 import time
-from io import BytesIO
 from typing import Optional
 
 import requests
 
-from app.aws.s3 import S3
 from app.aws.sqs import Message, SQS
-from app.db_operator.mysql_client import MySQLClient
 from app.exceptions import RetryableException, NotRetryableException, MalFormedMessageException
-from app.models.job_posting import JobPosting
 
 
 class BaseCrawlerWorker:
@@ -52,6 +48,15 @@ class BaseCrawlerWorker:
 
         logging.info(f'[{self._worker_name}] Worker stops')
 
+    def _poll_message(self) -> Optional[Message]:
+        messages = SQS.receive_message(self._queue_url, 1)
+        if len(messages) == 1:
+            return messages[0]
+        elif len(messages) > 1:
+            raise Exception(f'[{self._worker_name}] Polling for maximum 1 message, but got {messages}')
+        else:
+            return None
+
     def _process_message(self, message: Message):
         logging.info(f'[{self._worker_name}] Received message {message}')
         url = self._parse_message(message.body)
@@ -68,52 +73,7 @@ class BaseCrawlerWorker:
 
             logging.info(f'[{self._worker_name}] Original URL {url}, final URL {response.url}')
 
-            source = self._get_job_posting_source()
-            external_id = self._parse_external_id(response.url)
-
-            session = MySQLClient.get_session()
-            try:
-                existing = JobPosting.get_by_external_id(session=session, source=source, external_id=external_id)
-                if existing:
-                    # TODO: consider updating existing record?
-                    logging.info(f'[{self._worker_name}] JobPosting record with source "{source}" external_id "{external_id}" already exists')
-                    return
-
-                job_posting = JobPosting.create(
-                    session=session,
-                    source=source,
-                    external_id=external_id,
-                    url=response.url,
-                )
-
-                file_key = job_posting.id
-                logging.info(
-                    f'[{self._worker_name}] Uploading file from "{url}" to "{self._upload_bucket}/{file_key}"...')
-                S3.upload_file_obj(BytesIO(response.content), self._upload_bucket, file_key)
-                logging.info(f'[{self._worker_name}] Uploaded file to "{self._upload_bucket}/{file_key}"')
-
-                session.commit()
-                logging.info(f'[{self._worker_name}] Created JobPosting record {job_posting.id}')
-
-            except Exception as ex:
-                logging.error(f'[{self._worker_name}] Error processing, rolling back...', ex)
-                session.rollback()
-                raise RetryableException
-            except:
-                logging.error(f'[{self._worker_name}] Unexpected exception, rolling back...')
-                session.rollback()
-                raise RetryableException
-            finally:
-                session.close()
-
-    def _poll_message(self) -> Optional[Message]:
-        messages = SQS.receive_message(self._queue_url, 1)
-        if len(messages) == 1:
-            return messages[0]
-        elif len(messages) > 1:
-            raise Exception(f'[{self._worker_name}] Polling for maximum 1 message, but got {messages}')
-        else:
-            return None
+            self._process_response(response)
 
     def _delete_message(self, receipt_handle):
         SQS.delete_message(self._queue_url, receipt_handle)
@@ -128,8 +88,5 @@ class BaseCrawlerWorker:
 
         return body_obj['url']
 
-    def _get_job_posting_source(self) -> str:
-        pass
-
-    def _parse_external_id(self, final_url: str) -> str:
+    def _process_response(self, response: requests.Response):
         pass
