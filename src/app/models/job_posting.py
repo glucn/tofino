@@ -1,3 +1,4 @@
+import logging
 import uuid
 from dataclasses import dataclass
 from datetime import datetime
@@ -65,6 +66,7 @@ class JobPosting(Base):
 
     @classmethod
     def update(cls, session, job_posting_id, **kwargs):
+        logging.debug(f'update is called with {job_posting_id}, {kwargs}')
         job_posting = session.query(cls).filter(cls.id == job_posting_id).one()
 
         if not job_posting:
