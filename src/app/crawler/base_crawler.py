@@ -68,13 +68,22 @@ class BaseCrawlerWorker:
 
             logging.info(f'[{self._worker_name}] Original URL {url}, final URL {response.url}')
 
+            source = self._get_job_posting_source()
+            external_id = self._parse_external_id(response.url)
+
             session = MySQLClient.get_session()
             try:
+                existing = JobPosting.get_by_external_id(session=session, source=source, external_id=external_id)
+                if existing:
+                    # TODO: consider updating existing record?
+                    logging.info(f'[{self._worker_name}] JobPosting record with source "{source}" external_id "{external_id}" already exists')
+                    return
+
                 job_posting = JobPosting.create(
                     session=session,
-                    source=self._get_job_posting_source(),
+                    source=source,
+                    external_id=external_id,
                     url=response.url,
-                    external_id=self._parse_external_id(response.url)
                 )
 
                 file_key = job_posting.id

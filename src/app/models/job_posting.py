@@ -48,7 +48,11 @@ class JobPosting(Base):
 
     @classmethod
     def get(cls, session, job_posting_id):
-        return session.query(cls).filter(cls.id == job_posting_id).one()
+        return session.query(cls).filter(cls.id == job_posting_id).one_or_none()
+
+    @classmethod
+    def get_by_external_id(cls, session, source, external_id):
+        return session.query(cls).filter(cls.source == source, cls.external_id == external_id).one_or_none()
 
     @classmethod
     def create(cls, session, **kwargs):
