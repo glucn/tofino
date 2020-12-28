@@ -24,7 +24,7 @@ class IndeedJobPostingScraper(BaseScraperWorker):
         job_title = soup.find("h1", class_="jobsearch-JobInfoHeader-title").string
         job_description = '\n'.join([x for x in soup.find("div", class_="jobsearch-jobDescriptionText").strings])
         company_name = soup.find("div", class_="jobsearch-InlineCompanyRating").contents[0].string
-        location_string = soup.find("div", class_="jobsearch-InlineCompanyRating").contents[3].string
+        location_string = soup.find("div", class_="jobsearch-InlineCompanyRating").contents[-1].string
 
         logging.info(f'[{self._worker_name}] Creating JobPosting record...')
         logging.info(f'[{self._worker_name}] Data: {job_title}, {company_name}, {location_string}')
