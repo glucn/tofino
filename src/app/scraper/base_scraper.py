@@ -1,7 +1,6 @@
 import json
 import logging
 import sys
-import time
 from typing import Optional
 from urllib.parse import unquote_plus
 
