@@ -73,7 +73,10 @@ class JobPosting(Base):
             raise ValueError(u'job posting with id %s does not exist', job_posting_id)
 
         for k, v in kwargs.items():
-            setattr(job_posting, k, v)
+            if type(v) == str:
+                setattr(job_posting, k, cls._cleansing_string(v))
+            else:
+                setattr(job_posting, k, v)
 
         session.add(job_posting)
         return job_posting
@@ -87,3 +90,7 @@ class JobPosting(Base):
 
         session.delete(job_posting)
         return job_posting
+
+    @classmethod
+    def _cleansing_string(cls, content: str) -> str:
+        return content.replace(u'\ufeff', '')
