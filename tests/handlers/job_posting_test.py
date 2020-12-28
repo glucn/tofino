@@ -28,16 +28,18 @@ class JobPostingHandlerTest(TestCase):
             JobPostingHandler.get(None)
         self.assertEqual(ex.exception.code, 400)
 
+    @patch('app.db_operator.mysql_client.MySQLClient.get_session')
     @patch('app.models.job_posting.JobPosting.get')
-    def test_get_should_throw_404_error_if_job_posting_does_not_exist(self, mock_get):
+    def test_get_should_throw_404_error_if_job_posting_does_not_exist(self, mock_get, mock_session):
         mock_get.return_value = None
         with self.assertRaises(HTTPException) as ex:
             JobPostingHandler.get(self.test_job_posting.id)
         self.assertEqual(ex.exception.code, 404)
         mock_get.assert_called_once_with(mock.ANY, self.test_job_posting.id)
 
+    @patch('app.db_operator.mysql_client.MySQLClient.get_session')
     @patch('app.models.job_posting.JobPosting.get')
-    def test_get_should_return_json_string_of_job_posting(self, mock_get):
+    def test_get_should_return_json_string_of_job_posting(self, mock_get, mock_session):
         mock_get.return_value = self.test_job_posting
         result, code, header = JobPostingHandler.get(self.test_job_posting.id)
         self.assertEqual(self.test_job_posting, json.loads(result, object_hook=lambda d: JobPosting(**d)))
@@ -45,16 +47,18 @@ class JobPostingHandlerTest(TestCase):
         self.assertEqual(200, code)
         self.assertEqual({'Content-Type': 'application/json'}, header)
 
+    @patch('app.db_operator.mysql_client.MySQLClient.get_session')
     @patch('app.models.job_posting.JobPosting.create')
-    def test_create_should_throw_500_error_if_creating_fails(self, mock_create):
+    def test_create_should_throw_500_error_if_creating_fails(self, mock_create, mock_session):
         mock_create.return_value = None
         with self.assertRaises(HTTPException) as ex:
             JobPostingHandler.create(id=self.test_job_posting.id)
         self.assertEqual(ex.exception.code, 500)
         mock_create.assert_called_once_with(mock.ANY, id=self.test_job_posting.id)
 
+    @patch('app.db_operator.mysql_client.MySQLClient.get_session')
     @patch('app.models.job_posting.JobPosting.create')
-    def test_create_should_return_json_string_of_job_posting(self, mock_create):
+    def test_create_should_return_json_string_of_job_posting(self, mock_create, mock_session):
         mock_create.return_value = self.test_job_posting
         result, code, header = JobPostingHandler.create(**self.test_job_posting.__dict__)
         self.assertEqual(self.test_job_posting, json.loads(result, object_hook=lambda d: JobPosting(**d)))
@@ -67,16 +71,18 @@ class JobPostingHandlerTest(TestCase):
             JobPostingHandler.update(None)
         self.assertEqual(ex.exception.code, 400)
 
+    @patch('app.db_operator.mysql_client.MySQLClient.get_session')
     @patch('app.models.job_posting.JobPosting.update')
-    def test_update_should_throw_500_error_if_updating_fails(self, mock_update):
+    def test_update_should_throw_500_error_if_updating_fails(self, mock_update, mock_session):
         mock_update.return_value = None
         with self.assertRaises(HTTPException) as ex:
             JobPostingHandler.update(self.test_job_posting.id, **self.test_job_posting.__dict__)
         self.assertEqual(ex.exception.code, 500)
         mock_update.assert_called_once_with(mock.ANY, self.test_job_posting.id, **self.test_job_posting.__dict__)
 
+    @patch('app.db_operator.mysql_client.MySQLClient.get_session')
     @patch('app.models.job_posting.JobPosting.update')
-    def test_update_should_return_json_string_of_job_posting(self, mock_update):
+    def test_update_should_return_json_string_of_job_posting(self, mock_update, mock_session):
         mock_update.return_value = self.test_job_posting
         result, code, header = JobPostingHandler.update(self.test_job_posting.id, **self.test_job_posting.__dict__)
         self.assertEqual(self.test_job_posting, json.loads(result, object_hook=lambda d: JobPosting(**d)))
@@ -89,16 +95,18 @@ class JobPostingHandlerTest(TestCase):
             JobPostingHandler.delete(None)
         self.assertEqual(ex.exception.code, 400)
 
+    @patch('app.db_operator.mysql_client.MySQLClient.get_session')
     @patch('app.models.job_posting.JobPosting.delete')
-    def test_delete_should_throw_500_error_if_deleting_fails(self, mock_delete):
+    def test_delete_should_throw_500_error_if_deleting_fails(self, mock_delete, mock_session):
         mock_delete.return_value = None
         with self.assertRaises(HTTPException) as ex:
             JobPostingHandler.delete(self.test_job_posting.id)
         self.assertEqual(ex.exception.code, 500)
         mock_delete.assert_called_once_with(mock.ANY, self.test_job_posting.id)
 
+    @patch('app.db_operator.mysql_client.MySQLClient.get_session')
     @patch('app.models.job_posting.JobPosting.delete')
-    def test_delete_should_return_json_string_of_job_posting(self, mock_delete):
+    def test_delete_should_return_json_string_of_job_posting(self, mock_delete, mock_session):
         mock_delete.return_value = self.test_job_posting
         result, code, header = JobPostingHandler.delete(self.test_job_posting.id)
         self.assertEqual(self.test_job_posting, json.loads(result, object_hook=lambda d: JobPosting(**d)))

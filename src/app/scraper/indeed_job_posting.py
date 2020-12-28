@@ -19,8 +19,6 @@ class IndeedJobPostingScraper(BaseScraperWorker):
         super().__init__('IndeedJobPostingScraper', config.SCRAPER_INDEED_JOB_POSTING_SQS_QUEUE_URL)
 
     def _scrape(self, file: str):
-        logging.info('IndeedJobPostingScraper is scraping')
-
         soup = BeautifulSoup(file, 'html.parser')
 
         job_title = soup.find("h1", class_="jobsearch-JobInfoHeader-title").string
@@ -42,7 +40,6 @@ class IndeedJobPostingScraper(BaseScraperWorker):
                 location_string=location_string,
                 job_description=job_description,
             )
-            logging.info(f'[{self._worker_name}] Committing...')
             session.commit()
             logging.info(f'[{self._worker_name}] Created JobPosting record {job_posting.id}')
         except Exception as ex:
@@ -54,5 +51,4 @@ class IndeedJobPostingScraper(BaseScraperWorker):
             session.rollback()
             raise RetryableException
         finally:
-            logging.info(f'[{self._worker_name}] Closing session...')
             session.close()
