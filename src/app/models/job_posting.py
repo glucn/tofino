@@ -52,11 +52,8 @@ class JobPosting(Base):
 
     @classmethod
     def create(cls, session, **kwargs):
-        if 'url' not in kwargs:
-            raise ValueError('URL cannot be empty')
-
         if 'id' not in kwargs:
-            kwargs['id'] = uuid.uuid4()
+            kwargs['id'] = str(uuid.uuid4())
 
         job_posting = cls(**kwargs)
         session.add(job_posting)
