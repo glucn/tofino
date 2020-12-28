@@ -4,6 +4,7 @@ import json
 
 import flask
 
+from app.db_operator.mysql_client import MySQLClient
 from app.handlers.base_handler import BaseHandler
 
 from app.models.job_posting import JobPosting
@@ -22,40 +23,58 @@ class JobPostingHandler(BaseHandler):
         if not job_posting_id:
             flask.abort(400, "job_posting_id is required")
 
-        job_posting = JobPosting.get(job_posting_id)
-        if not job_posting:
-            flask.abort(404, f"job posting with id {job_posting_id} cannot be found")
+        session = MySQLClient.get_session()
+        try:
+            job_posting = JobPosting.get(session, job_posting_id)
+            if not job_posting:
+                flask.abort(404, f"job posting with id {job_posting_id} cannot be found")
 
-        return json.dumps(dataclasses.asdict(job_posting), default=json_serialize), 200, cls.JSON_HEADER
+            return json.dumps(dataclasses.asdict(job_posting), default=json_serialize), 200, cls.JSON_HEADER
+        finally:
+            session.close()
 
     @classmethod
     def create(cls, **kwargs):
-        job_posting = JobPosting.create(**kwargs)
+        session = MySQLClient.get_session()
+        try:
+            job_posting = JobPosting.create(session, **kwargs)
+            if not job_posting:
+                flask.abort(500, "Internal Failure")
+            session.commit()
 
-        if not job_posting:
-            flask.abort(500, "Internal Failure")
-
-        return json.dumps(dataclasses.asdict(job_posting), default=json_serialize), 200, cls.JSON_HEADER
+            return json.dumps(dataclasses.asdict(job_posting), default=json_serialize), 200, cls.JSON_HEADER
+        finally:
+            session.close()
 
     @classmethod
     def update(cls, job_posting_id, **kwargs):
         if not job_posting_id:
             flask.abort(400, "job_posting_id is required")
 
-        job_posting = JobPosting.update(job_posting_id, **kwargs)
+        session = MySQLClient.get_session()
+        try:
+            job_posting = JobPosting.update(session, job_posting_id, **kwargs)
+            if not job_posting:
+                flask.abort(500, "Internal Failure")
 
-        if not job_posting:
-            flask.abort(500, "Internal Failure")
+            session.commit()
 
-        return json.dumps(dataclasses.asdict(job_posting), default=json_serialize), 200, cls.JSON_HEADER
+            return json.dumps(dataclasses.asdict(job_posting), default=json_serialize), 200, cls.JSON_HEADER
+        finally:
+            session.close()
 
     @classmethod
     def delete(cls, job_posting_id):
         if not job_posting_id:
             flask.abort(400, "job_posting_id is required")
+        session = MySQLClient.get_session()
+        try:
+            job_posting = JobPosting.delete(session, job_posting_id)
+            if not job_posting:
+                flask.abort(500, "Internal Failure")
 
-        job_posting = JobPosting.delete(job_posting_id)
-        if not job_posting:
-            flask.abort(500, "Internal Failure")
+            session.commit()
 
-        return json.dumps(dataclasses.asdict(job_posting), default=json_serialize), 200, cls.JSON_HEADER
+            return json.dumps(dataclasses.asdict(job_posting), default=json_serialize), 200, cls.JSON_HEADER
+        finally:
+            session.close()

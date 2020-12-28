@@ -2,11 +2,15 @@ import uuid
 from dataclasses import dataclass
 from datetime import datetime
 
-from app.db_operator import db
+from sqlalchemy import Column, String, DateTime
+
+from sqlalchemy.ext.declarative import declarative_base
+
+Base = declarative_base()
 
 
 @dataclass
-class JobPosting(db.Model):
+class JobPosting(Base):
     """ Data model of Job Postings """
     id: str
     url: str
@@ -20,15 +24,15 @@ class JobPosting(db.Model):
 
     __tablename__ = "testing"
 
-    id = db.Column(db.String(50), primary_key=True)
-    url = db.Column(db.String(256))
-    source = db.Column(db.String(256))
-    title = db.Column(db.String(256))
-    company_id = db.Column(db.String(50))
-    company_name = db.Column(db.String(256))
-    location_string = db.Column(db.String(256))
-    posted_datetime = db.Column(db.DateTime)
-    job_description = db.Column(db.String(10000))
+    id = Column(String(50), primary_key=True)
+    url = Column(String(256))
+    source = Column(String(256))
+    title = Column(String(256))
+    company_id = Column(String(50))
+    company_name = Column(String(256))
+    location_string = Column(String(256))
+    posted_datetime = Column(DateTime)
+    job_description = Column(String(10000))
 
     def __init__(self, **kwargs):
         for k, v in kwargs.items():
@@ -41,20 +45,24 @@ class JobPosting(db.Model):
                 self.__setattr__(k, v)
 
     @classmethod
-    def get(cls, job_posting_id):
-        return cls.query.get(job_posting_id)
+    def get(cls, session, job_posting_id):
+        return session.query(cls).filter(cls.id == job_posting_id).one()
 
     @classmethod
-    def create(cls, **kwargs):
-        job_posting_id = uuid.uuid4()
-        job_posting = cls(id=str(job_posting_id), **kwargs)
-        db.session.add(job_posting)
-        db.session.commit()
+    def create(cls, session, **kwargs):
+        if 'url' not in kwargs:
+            raise ValueError('URL cannot be empty')
+
+        if 'id' not in kwargs:
+            kwargs['id'] = uuid.uuid4()
+
+        job_posting = cls(**kwargs)
+        session.add(job_posting)
         return job_posting
 
     @classmethod
-    def update(cls, job_posting_id, **kwargs):
-        job_posting = db.session.query(cls).get(job_posting_id)
+    def update(cls, session, job_posting_id, **kwargs):
+        job_posting = session.query(cls).filter(cls.id == job_posting_id).one()
 
         if not job_posting:
             raise ValueError(u'job posting with id %s does not exist', job_posting_id)
@@ -62,16 +70,15 @@ class JobPosting(db.Model):
         for k, v in kwargs.items():
             setattr(job_posting, k, v)
 
-        db.session.commit()
+        session.add(job_posting)
         return job_posting
 
     @classmethod
-    def delete(cls, job_posting_id):
-        job_posting = db.session.query(cls).get(job_posting_id)
+    def delete(cls, session, job_posting_id):
+        job_posting = session.query(cls).filter(cls.id == job_posting_id).one()
 
         if not job_posting:
             raise ValueError(u'job posting with id %s does not exist', job_posting_id)
 
-        db.session.delete(job_posting)
-        db.session.commit()
+        session.delete(job_posting)
         return job_posting

@@ -4,7 +4,6 @@ from logging.config import fileConfig
 from flask import Flask, request
 
 from app.crawler import CrawlerManager
-from app.db_operator.mysql_client import MySQLClient, db
 from app.handlers.job_posting import JobPostingHandler
 from app.scraper import ScraperManager
 
@@ -13,13 +12,7 @@ if not os.path.exists("logs/"):
 
 APP = Flask(__name__)
 fileConfig('logging.cfg')
-# basicConfig(level=logging.DEBUG)
-
-APP.config['SQLALCHEMY_DATABASE_URI'] = MySQLClient.get_sqlalchemy_connection_string()
-APP.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-APP.config['SQLALCHEMY_ECHO'] = True
-
-db.init_app(APP)
+# logging.basicConfig(level=logging.DEBUG)
 
 
 @APP.route('/healthz', methods=['GET'])

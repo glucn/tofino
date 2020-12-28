@@ -1,5 +1,6 @@
 import json
 import logging
+import sys
 import time
 from typing import Optional
 from urllib.parse import unquote_plus
@@ -32,14 +33,16 @@ class BaseScraperWorker:
             if message:
                 try:
                     self._process_message(message)
-                except RetryableException:
-                    time.sleep(self._sleep_seconds)
-                    continue
-                except NotRetryableException as ex:
-                    logging.error(ex)
-                finally:
                     logging.info(f'[{self._worker_name}] Deleting message {message}...')
                     self._delete_message(message.receipt_handle)
+                except RetryableException as ex:
+                    logging.error(f'[{self._worker_name}] Got RetryableException', ex)
+                except NotRetryableException as ex:
+                    logging.error(f'[{self._worker_name}] Got NotRetryableException', ex)
+                    logging.info(f'[{self._worker_name}] Deleting message {message}...')
+                    self._delete_message(message.receipt_handle)
+                except:
+                    logging.error(f'[{self._worker_name}] Got unexpected exception', sys.exc_info()[0])
             else:
                 logging.info(f'[{self._worker_name}] No message received')
 
