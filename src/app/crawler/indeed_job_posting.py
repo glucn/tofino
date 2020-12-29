@@ -24,6 +24,10 @@ class IndeedJobPostingCrawler(BaseCrawlerWorker):
                          60)
 
     def _process_response(self, response: Response):
+        if self._SOURCE not in response.url:
+            logging.warning(f'[{self._worker_name}] The crawler is redirected to unsupported URL {response.url}, discarding...')
+            return
+
         source = self._SOURCE
         external_id = self._parse_external_id(response.url)
 
