@@ -26,7 +26,7 @@ class JobPosting(Base):
     created_datetime: datetime
     updated_datetime: datetime
 
-    __tablename__ = "testing"
+    __tablename__ = "job_posting"
 
     id = Column(String(256), primary_key=True)
     external_id = Column(String(256))
