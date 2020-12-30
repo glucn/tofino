@@ -72,11 +72,10 @@ class IndeedJobPostingCrawler(BaseCrawlerWorker):
         finally:
             session.close()
 
-    def _parse_external_id(self, url: str) -> str:
+    @staticmethod
+    def _parse_external_id(url: str) -> str:
         parsed_url = urlparse(url)
         queries = parse_qs(parsed_url.query)
         if 'jk' in queries:
             return queries['jk'][0]
-
-        logging.warning(f'[{self._worker_name}] Found no "jk" query parameter in {url}')
         return ''

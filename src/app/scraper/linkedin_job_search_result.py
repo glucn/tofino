@@ -25,7 +25,7 @@ class LinkedInJobSearchResultScraper(BaseScraperWorker):
         urls = [self._remove_queries(x['href']) for x in soup.find_all('a', class_='result-card__full-card-link')]
 
         for url in urls:
-            logging.info(f'[LinkedInJobSearchResultScraper] Sending message for URL "{url}"...')
+            logging.info(f'[{self._worker_name}] Sending message for URL "{url}"...')
 
             message = json.dumps({'url': url})
             SQS.send_message(config.CRAWLER_LINKEDIN_JOB_POSTING_SQS_QUEUE_URL, message)

@@ -27,7 +27,7 @@ class IndeedJobSearchResultScraper(BaseScraperWorker):
         urls = [self._parse_url(x['href']) for x in soup.find_all('a', class_='jobtitle turnstileLink')]
 
         for url in urls:
-            logging.info(f'[IndeedJobSearchResultScraper] Sending message for URL "{url}"...')
+            logging.info(f'[{self._worker_name}] Sending message for URL "{url}"...')
 
             message = json.dumps({'url': url})
             SQS.send_message(config.CRAWLER_INDEED_JOB_POSTING_SQS_QUEUE_URL, message)
