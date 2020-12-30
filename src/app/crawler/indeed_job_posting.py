@@ -31,6 +31,11 @@ class IndeedJobPostingCrawler(BaseCrawlerWorker):
         source = self._SOURCE
         external_id = self._parse_external_id(response.url)
 
+        if not external_id:
+            logging.warning(
+                f'[{self._worker_name}] Cannot determine external ID from the URL {response.url}, discarding...')
+            return
+
         session = MySQLClient.get_session()
         try:
             existing = JobPosting.get_by_external_id(session=session, source=source, external_id=external_id)
