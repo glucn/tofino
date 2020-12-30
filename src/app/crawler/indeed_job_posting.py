@@ -25,7 +25,8 @@ class IndeedJobPostingCrawler(BaseCrawlerWorker):
 
     def _process_response(self, response: Response):
         if self._SOURCE not in response.url:
-            logging.warning(f'[{self._worker_name}] The crawler is redirected to unsupported URL {response.url}, discarding...')
+            logging.warning(
+                f'[{self._worker_name}] The crawler is redirected to unsupported URL {response.url}, discarding...')
             return
 
         source = self._SOURCE
@@ -73,8 +74,9 @@ class IndeedJobPostingCrawler(BaseCrawlerWorker):
 
     def _parse_external_id(self, url: str) -> str:
         parsed_url = urlparse(url)
-        jk = parse_qs(parsed_url.query)['jk']
-        if len(jk) < 1:
-            logging.warning(f'[{self._worker_name}] Found no "jk" query parameter in {url}, will use an empty external_id')
-            return ''
-        return jk[0]
+        queries = parse_qs(parsed_url.query)
+        if 'jk' in queries:
+            return queries['jk'][0]
+
+        logging.warning(f'[{self._worker_name}] Found no "jk" query parameter in {url}')
+        return ''
