@@ -1,5 +1,5 @@
 beautifulsoup4==4.9.3
-boto3==1.16.46
+boto3==1.16.47
 click==7.1.2
 Flask==1.1.2
 invoke==1.5.0
