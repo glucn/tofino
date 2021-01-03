@@ -5,12 +5,16 @@ import requests
 import spacy
 from spacy.pipeline import EntityRuler
 
-
-skill_list = ['SQL', 'SAP', 'SAS', 'Python', 'ERP', 'BI', 'MS Office', 'Microsoft Office', 'Dynamics', 'Excel', 'Word',
-              'PowerPoint', 'Workday',
-              'Tableau', 'Java', 'Mongo', 'AWS', 'VBA', 'Oracle', 'SPSS', 'Javascript', 'Visio', 'Access', 'Git',
-              'Github', 'R', 'salesforce', 'Esuite', 'COGNOS',
-              'prioritization', 'communication', 'presentation',
+skill_list = ['SAP', 'SAS', 'ERP',  'Workday', 'salesforce', 'Esuite', 'COGNOS', 'AWS', 'SPSS',
+              'MS Office', 'Microsoft Office', 'Dynamics', 'Excel', 'Word', 'PowerPoint', 'Visio', 'Access', 'Outlook', 'SharePoint',
+              'Google Sheets', 'Google Analytics', 'Google Data Studio',
+              'SQL', 'Oracle', 'Mongo', 'SSRS', 'Power BI', 'Tableau', 'BI', 'CRM', 'ERP',
+              'programming', 'debugging', 'R', 'Python', 'Javascript', 'VBA', 'C#', 'Java',
+              'Git', 'Github',
+              'prioritization', 'communication', 'presentation', 'collaboration', 'analyze', 'analytical', 'creative',
+              'design', 'project management', 'writing', 'leadership', 'problem solving', 'integrity', 'detail-oriented',
+              'data-driven', 'organized', 'passionate',
+              'Spanish',
               ]
 
 
