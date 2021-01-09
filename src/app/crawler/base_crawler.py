@@ -73,6 +73,7 @@ class BaseCrawlerWorker:
 
             logging.info(f'[{self._worker_name}] Original URL {url}, final URL {response.url}')
 
+            logging.info(f'[{self._worker_name}] Content {response.content}')
             self._process_response(response)
 
     def _delete_message(self, receipt_handle):
