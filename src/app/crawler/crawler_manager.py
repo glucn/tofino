@@ -12,7 +12,7 @@ class CrawlerManager:
     def start(cls):
         crawlers = [
             # LinkedInJobPostingCrawler(),
-            IndeedJobPostingCrawler(),
+            # IndeedJobPostingCrawler(),
             IndeedJobSearchResultCrawler(),
         ]
 
