@@ -37,4 +37,8 @@ crawlers = [
         'region': 'ap-northeast-1',
         'arn': 'arn:aws:lambda:ap-northeast-1:430714039810:function:tofino-crawler-ap-northeast-1-CrawlerLambda-2SALLYMVXFR5',
     },
+    {
+        'region': 'ap-northeast-2',
+        'arn': 'arn:aws:lambda:ap-northeast-2:430714039810:function:tofino-crawler-ap-northeast-2-CrawlerLambda-1VZVOD7T5MA93',
+    },
 ]
