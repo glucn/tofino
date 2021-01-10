@@ -3,8 +3,6 @@ import uuid
 from datetime import datetime
 from io import BytesIO
 
-from requests import Response
-
 import config
 from app.aws.s3 import S3
 from app.crawler.base_crawler import BaseCrawlerWorker
