@@ -23,6 +23,10 @@ BUCKET_INDEED_JOB_SEARCH_RESULT = 'tofino-indeedjobsearchresultbucket-qy5bbfkrks
 crawlers = [
     {
         'region': 'us-east-1',
-        'arn': 'arn:aws:lambda:us-east-1:430714039810:function:download'
+        'arn': 'arn:aws:lambda:us-east-1:430714039810:function:download',
+    },
+    {
+        'region': 'us-east-2',
+        'arn': 'arn:aws:lambda:us-east-2:430714039810:function:tofino-crawler-us-east-2-CrawlerLambda-VEGL58M9EORC',
     }
 ]
