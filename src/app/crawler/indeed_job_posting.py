@@ -2,8 +2,6 @@ import logging
 from io import BytesIO
 from urllib.parse import urlparse, parse_qs
 
-from requests import Response
-
 import config
 from app.aws.s3 import S3
 from app.crawler.base_crawler import BaseCrawlerWorker
