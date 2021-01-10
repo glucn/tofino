@@ -20,8 +20,8 @@ class IndeedJobSearchResultCrawler(BaseCrawlerWorker):
                          config.CRAWLER_INDEED_JOB_SEARCH_RESULT_SQS_QUEUE_URL,
                          config.BUCKET_INDEED_JOB_SEARCH_RESULT)
 
-    def _process_response(self, response: Response):
+    def _process_response(self, final_url: str, content: str):
         file_key = f'{datetime.now().strftime("%Y-%m-%d")}-{str(uuid.uuid4())}'
         logging.info(f'[{self._worker_name}] Uploading file to "{self._upload_bucket}/{file_key}"...')
-        S3.upload_file_obj(BytesIO(response.content), self._upload_bucket, file_key)
+        S3.upload_file_obj(BytesIO(content.encode('utf-8')), self._upload_bucket, file_key)
         logging.info(f'[{self._worker_name}] Uploaded file to "{self._upload_bucket}/{file_key}"')

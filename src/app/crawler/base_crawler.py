@@ -1,12 +1,14 @@
 import json
 import logging
+import random
 from typing import Optional
 
-import requests
-
+from app.aws import Lambda
 from app.aws.sqs import Message, SQS
+
 from app.exceptions import RetryableException, NotRetryableException, MalFormedMessageException
 from app.utils.sleep_with_jitter import sleep_with_jitter
+from config import crawlers
 
 
 class BaseCrawlerWorker:
@@ -61,25 +63,24 @@ class BaseCrawlerWorker:
         logging.info(f'[{self._worker_name}] Received message {message}')
         url = self._parse_message(message.body)
 
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36',
-            'Content-Type': 'text/html',
-        }
+        crawler = crawlers[random.randrange(len(crawlers))]
 
-        with requests.get(url, stream=True, allow_redirects=True, headers=headers) as response:
-            if response.status_code != 200:
-                logging.error(f'Getting URL "{url}" resulted in status code {response.status_code}')
-                raise Exception
+        r = Lambda.invoke(crawler['region'], crawler['arn'], json.dumps({'url': url}))
+        response = json.loads(r)
+        if response['statusCode'] != 200:
+            logging.error(f'Getting URL "{url}" resulted in status code {response["statusCode"]}')
+            raise Exception
 
-            logging.info(f'[{self._worker_name}] Original URL {url}, final URL {response.url}')
+        logging.info(f'[{self._worker_name}] Original URL {url}, final URL {response["url"]}')
 
-            logging.info(f'[{self._worker_name}] Content {response.content}')
-            self._process_response(response)
+        logging.info(f'[{self._worker_name}] Content {response["content"]}')
+        self._process_response(response["url"], response["content"])
 
     def _delete_message(self, receipt_handle):
         SQS.delete_message(self._queue_url, receipt_handle)
 
-    def _parse_message(self, message_body: str) -> (str, str):
+    @staticmethod
+    def _parse_message(message_body: str) -> (str, str):
         """
         Parse the message
         """
@@ -89,5 +90,5 @@ class BaseCrawlerWorker:
 
         return body_obj['url']
 
-    def _process_response(self, response: requests.Response):
+    def _process_response(self, final_url: str, content: str):
         pass

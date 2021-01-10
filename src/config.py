@@ -18,3 +18,11 @@ SCRAPER_INDEED_JOB_POSTING_SQS_QUEUE_URL = 'https://sqs.us-west-2.amazonaws.com/
 SCRAPER_INDEED_JOB_SEARCH_RESULT_SQS_QUEUE_URL = 'https://sqs.us-west-2.amazonaws.com/430714039810/tofino-IndeedJobSearchResultNotificationQueue-1C072NHTD2010'
 BUCKET_INDEED_JOB_POSTING = 'tofino-indeedjobpostingbucket-vwf5ud6vdepl'
 BUCKET_INDEED_JOB_SEARCH_RESULT = 'tofino-indeedjobsearchresultbucket-qy5bbfkrksma'
+
+# Crawler Lambda functions
+crawlers = [
+    {
+        'region': 'us-east-1',
+        'arn': 'arn:aws:lambda:us-east-1:430714039810:function:download'
+    }
+]

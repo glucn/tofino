@@ -23,18 +23,18 @@ class IndeedJobPostingCrawler(BaseCrawlerWorker):
                          config.BUCKET_INDEED_JOB_POSTING,
                          60)
 
-    def _process_response(self, response: Response):
-        if 'indeed' not in response.url:
+    def _process_response(self, final_url: str, content: str):
+        if 'indeed' not in final_url:
             logging.warning(
-                f'[{self._worker_name}] The crawler is redirected to unsupported URL {response.url}, discarding...')
+                f'[{self._worker_name}] The crawler is redirected to unsupported URL {final_url}, discarding...')
             return
 
         source = self._SOURCE
-        external_id = self._parse_external_id(response.url)
+        external_id = self._parse_external_id(final_url)
 
         if not external_id:
             logging.warning(
-                f'[{self._worker_name}] Cannot determine external ID from the URL {response.url}, discarding...')
+                f'[{self._worker_name}] Cannot determine external ID from the URL {final_url}, discarding...')
             return
 
         session = MySQLClient.get_session()
@@ -50,12 +50,12 @@ class IndeedJobPostingCrawler(BaseCrawlerWorker):
                 session=session,
                 source=source,
                 external_id=external_id,
-                url=response.url,
+                url=final_url,
             )
 
             file_key = job_posting.id
             logging.info(f'[{self._worker_name}] Uploading file to "{self._upload_bucket}/{file_key}"...')
-            S3.upload_file_obj(BytesIO(response.content), self._upload_bucket, file_key)
+            S3.upload_file_obj(BytesIO(content.encode('utf-8')), self._upload_bucket, file_key)
             logging.info(f'[{self._worker_name}] Uploaded file to "{self._upload_bucket}/{file_key}"')
 
             session.commit()
