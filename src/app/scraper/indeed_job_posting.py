@@ -38,6 +38,10 @@ class IndeedJobPostingScraper(BaseScraperWorker):
         super().__init__('IndeedJobPostingScraper', config.SCRAPER_INDEED_JOB_POSTING_SQS_QUEUE_URL, sleep_seconds)
 
     def _scrape(self, file: str, file_name: str):
+        if not file:
+            logging.error(f'[{self._worker_name}] Received an empty file [{file_name}]')
+            return
+
         soup = BeautifulSoup(file, 'html.parser')
 
         job_title = soup.find("h1", class_="jobsearch-JobInfoHeader-title").string
