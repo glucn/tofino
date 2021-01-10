@@ -12,7 +12,7 @@ class Lambda:
 
     @classmethod
     def _get_client(cls, region: str):
-        if not cls._client[region]:
+        if region not in cls._client:
             session = boto3.session.Session()
             cls._client[region] = session.client(
                 service_name='lambda',
