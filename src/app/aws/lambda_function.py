@@ -33,6 +33,8 @@ class Lambda:
         if not arn:
             raise ValueError(u'arn is required')
 
+        logging.info(f'Invoke is called with region [{region}], arn [{arn}]')
+
         try:
             response = cls._get_client(region).invoke(
                 FunctionName=arn,
