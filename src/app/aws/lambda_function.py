@@ -33,14 +33,12 @@ class Lambda:
         if not arn:
             raise ValueError(u'arn is required')
 
-        logging.info(f'Invoke is called with region [{region}], arn [{arn}], payload {payload}')
         try:
             response = cls._get_client(region).invoke(
                 FunctionName=arn,
                 InvocationType='RequestResponse',
                 Payload=payload.encode('utf-8'),
             )
-            logging.info(f'Response from invoke [{response}]')
             return response['Payload'].read()
 
         except ClientError as e:
