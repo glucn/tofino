@@ -15,6 +15,7 @@ class JobPosting(Base):
     id: str
     external_id: str
     url: str
+    origin_url: str
     source: str
     title: str
     company_id: str
@@ -30,6 +31,7 @@ class JobPosting(Base):
     id = Column(String(256), primary_key=True)
     external_id = Column(String(256))
     url = Column(String(256))
+    origin_url = Column(String(2048))
     source = Column(String(256))
     title = Column(String(256))
     company_id = Column(String(50))
@@ -61,6 +63,10 @@ class JobPosting(Base):
     @classmethod
     def get_by_url(cls, session, url):
         return session.query(cls).filter(cls.url == url).one_or_none()
+
+    @classmethod
+    def get_by_origin_url(cls, session, origin_url):
+        return session.query(cls).filter(cls.origin_url == origin_url).one_or_none()
 
     @classmethod
     def create(cls, session, **kwargs):

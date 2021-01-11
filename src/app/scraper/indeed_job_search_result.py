@@ -30,7 +30,7 @@ class IndeedJobSearchResultScraper(BaseScraperWorker):
 
         for url in urls:
             session = MySQLClient.get_session()
-            existing = JobPosting.get_by_url(session, url)
+            existing = JobPosting.get_by_origin_url(session, url)
             session.close()
 
             if existing:

@@ -23,7 +23,7 @@ class IndeedJobPostingCrawler(BaseCrawlerWorker):
 
     def _should_crawl(self, url: str) -> bool:
         session = MySQLClient.get_session()
-        existing = JobPosting.get_by_url(session, url)
+        existing = JobPosting.get_by_origin_url(session, url)
         session.close()
 
         if existing:
@@ -32,7 +32,7 @@ class IndeedJobPostingCrawler(BaseCrawlerWorker):
 
         return True
 
-    def _process_response(self, final_url: str, content: str):
+    def _process_response(self, origin_url: str, final_url: str, content: str):
         if bool(urlparse(final_url).netloc) and 'indeed' not in final_url:
             logging.warning(
                 f'[{self._worker_name}] The crawler is redirected to unsupported URL {final_url}, discarding...')
@@ -60,6 +60,7 @@ class IndeedJobPostingCrawler(BaseCrawlerWorker):
                 source=source,
                 external_id=external_id,
                 url=final_url,
+                origin_url=origin_url,
             )
 
             file_key = job_posting.id

@@ -78,7 +78,7 @@ class BaseCrawlerWorker:
         if not response["content"]:
             logging.warning(f'[{self._worker_name}] Received empty content')
 
-        self._process_response(response["url"], response["content"])
+        self._process_response(url, response["url"], response["content"])
 
     def _delete_message(self, receipt_handle):
         SQS.delete_message(self._queue_url, receipt_handle)
@@ -97,5 +97,5 @@ class BaseCrawlerWorker:
     def _should_crawl(self, url: str) -> bool:
         pass
 
-    def _process_response(self, final_url: str, content: str):
+    def _process_response(self, origin_url: str, final_url: str, content: str):
         pass
