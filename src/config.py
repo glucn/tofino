@@ -25,10 +25,11 @@ crawlers = [
         'region': 'us-east-2',
         'arn': 'arn:aws:lambda:us-east-2:430714039810:function:tofino-crawler-us-east-2-CrawlerLambda-VEGL58M9EORC',
     },
-    {
-        'region': 'us-west-1',
-        'arn': 'arn:aws:lambda:us-west-1:430714039810:function:tofino-crawler-us-west-1-CrawlerLambda-1V5OBKOZ3GPWM',
-    },
+    # Returning empty content
+    # {
+    #     'region': 'us-west-1',
+    #     'arn': 'arn:aws:lambda:us-west-1:430714039810:function:tofino-crawler-us-west-1-CrawlerLambda-1V5OBKOZ3GPWM',
+    # },
     {
         'region': 'ca-central-1',
         'arn': 'arn:aws:lambda:ca-central-1:430714039810:function:tofino-crawler-ca-central-1-CrawlerLambda-1RZPQJLB9QESO',
