@@ -3,6 +3,8 @@ import logging
 import boto3
 from botocore.exceptions import ClientError
 
+from app.exceptions import NotRetryableException
+
 
 class Lambda:
     """
@@ -41,6 +43,10 @@ class Lambda:
                 InvocationType='RequestResponse',
                 Payload=payload.encode('utf-8'),
             )
+            if 'Payload' not in response:
+                logging.error(f'Invoke response does not contain payload: [{response}]')
+                raise NotRetryableException
+
             return response['Payload'].read()
 
         except ClientError as e:

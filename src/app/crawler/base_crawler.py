@@ -67,7 +67,6 @@ class BaseCrawlerWorker:
             return
 
         crawler = crawlers[random.randrange(len(crawlers))]
-
         r = Lambda.invoke(crawler['region'], crawler['arn'], json.dumps({'url': url}))
         response = json.loads(r)
         if response['statusCode'] != 200:
