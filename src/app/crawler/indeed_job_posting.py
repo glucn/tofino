@@ -1,6 +1,6 @@
 import logging
 from io import BytesIO
-from urllib.parse import urlparse, parse_qs
+from urllib.parse import urlparse, parse_qs, urlunparse
 
 import config
 from app.aws.s3 import S3
@@ -65,7 +65,7 @@ class IndeedJobPostingCrawler(BaseCrawlerWorker):
                 session=session,
                 source=source,
                 external_id=external_id,
-                url=final_url,
+                url=self._prepend_netloc_to_relative_url(final_url),
                 origin_url=origin_url,
             )
 
@@ -95,3 +95,13 @@ class IndeedJobPostingCrawler(BaseCrawlerWorker):
         if 'jk' in queries:
             return queries['jk'][0]
         return ''
+
+    def _prepend_netloc_to_relative_url(self, url: str) -> str:
+        parsed_url = urlparse(url)
+        if bool(parsed_url.netloc):
+            return url
+
+        parsed_url.netloc = self._SOURCE
+        parsed_url.scheme = 'HTTPS'
+
+        return urlunparse(parsed_url)
