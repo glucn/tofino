@@ -22,7 +22,7 @@ class IndeedJobPostingCrawler(BaseCrawlerWorker):
                          60)
 
     def _process_response(self, final_url: str, content: str):
-        if 'indeed' not in final_url:
+        if bool(urlparse(final_url).netloc) and 'indeed' not in final_url:
             logging.warning(
                 f'[{self._worker_name}] The crawler is redirected to unsupported URL {final_url}, discarding...')
             return
