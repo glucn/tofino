@@ -6,6 +6,8 @@ from bs4 import BeautifulSoup
 
 import config
 from app.aws import SQS
+from app.db_operator.mysql_client import MySQLClient
+from app.models.job_posting import JobPosting
 from app.scraper.base_scraper import BaseScraperWorker
 
 
@@ -27,6 +29,14 @@ class IndeedJobSearchResultScraper(BaseScraperWorker):
         urls = [self._parse_url(x['href']) for x in soup.find_all('a', class_='jobtitle turnstileLink')]
 
         for url in urls:
+            session = MySQLClient.get_session()
+            existing = JobPosting.get_by_url(session, url)
+            session.close()
+
+            if existing:
+                logging.info(f'[{self._worker_name}] JobPosting for URL "{url}" already exist in DB.')
+                continue
+
             logging.info(f'[{self._worker_name}] Sending message for URL "{url}"...')
 
             message = json.dumps({'url': url})

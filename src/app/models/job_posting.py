@@ -59,6 +59,10 @@ class JobPosting(Base):
         return session.query(cls).filter(cls.source == source, cls.external_id == external_id).one_or_none()
 
     @classmethod
+    def get_by_url(cls, session, url):
+        return session.query(cls).filter(cls.url == url).one_or_none()
+
+    @classmethod
     def create(cls, session, **kwargs):
         if 'id' not in kwargs:
             kwargs['id'] = str(uuid.uuid4())
