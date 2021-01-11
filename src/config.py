@@ -41,11 +41,12 @@ crawlers = [
         'region': 'ap-northeast-2',
         'arn': 'arn:aws:lambda:ap-northeast-2:430714039810:function:tofino-crawler-ap-northeast-2-CrawlerLambda-1VZVOD7T5MA93',
     },
-    {
-        'region': 'eu-west-1',
-        'arn': 'arn:aws:lambda:eu-west-1:430714039810:function:tofino-crawler-eu-west-1-CrawlerLambda-18TYUVPMF7PIX',
-    },
-    # It is getting hCaptcha
+    # getting hCaptcha
+    # {
+    #     'region': 'eu-west-1',
+    #     'arn': 'arn:aws:lambda:eu-west-1:430714039810:function:tofino-crawler-eu-west-1-CrawlerLambda-18TYUVPMF7PIX',
+    # },
+    # getting hCaptcha
     # {
     #     'region': 'eu-west-2',
     #     'arn': 'arn:aws:lambda:eu-west-2:430714039810:function:tofino-crawler-eu-west-2-CrawlerLambda-GHV83A9HOMXW',
