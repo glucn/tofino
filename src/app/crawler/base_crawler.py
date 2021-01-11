@@ -63,6 +63,9 @@ class BaseCrawlerWorker:
         logging.info(f'[{self._worker_name}] Received message {message}')
         url = self._parse_message(message.body)
 
+        if not self._should_crawl(url):
+            return
+
         crawler = crawlers[random.randrange(len(crawlers))]
 
         r = Lambda.invoke(crawler['region'], crawler['arn'], json.dumps({'url': url}))
@@ -89,6 +92,9 @@ class BaseCrawlerWorker:
             raise MalFormedMessageException(f'Message {message_body} is malformed')
 
         return body_obj['url']
+
+    def _should_crawl(self, url: str) -> bool:
+        pass
 
     def _process_response(self, final_url: str, content: str):
         pass

@@ -18,6 +18,9 @@ class IndeedJobSearchResultCrawler(BaseCrawlerWorker):
                          config.CRAWLER_INDEED_JOB_SEARCH_RESULT_SQS_QUEUE_URL,
                          config.BUCKET_INDEED_JOB_SEARCH_RESULT)
 
+    def _should_crawl(self, url: str) -> bool:
+        return True
+
     def _process_response(self, final_url: str, content: str):
         file_key = f'{datetime.now().strftime("%Y-%m-%d")}-{str(uuid.uuid4())}'
         logging.info(f'[{self._worker_name}] Uploading file to "{self._upload_bucket}/{file_key}"...')

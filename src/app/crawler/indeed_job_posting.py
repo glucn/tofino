@@ -21,6 +21,17 @@ class IndeedJobPostingCrawler(BaseCrawlerWorker):
                          config.BUCKET_INDEED_JOB_POSTING,
                          60)
 
+    def _should_crawl(self, url: str) -> bool:
+        session = MySQLClient.get_session()
+        existing = JobPosting.get_by_url(session, url)
+        session.close()
+
+        if existing:
+            logging.info(f'[{self._worker_name}] The Job Posting of {url} already exist, skipping...')
+            return False
+
+        return True
+
     def _process_response(self, final_url: str, content: str):
         if bool(urlparse(final_url).netloc) and 'indeed' not in final_url:
             logging.warning(
