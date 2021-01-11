@@ -53,6 +53,12 @@ class IndeedJobPostingCrawler(BaseCrawlerWorker):
                 # TODO: consider updating existing record?
                 logging.info(
                     f'[{self._worker_name}] JobPosting record with source "{source}" external_id "{external_id}" already exists')
+
+                if not existing.origin_url:
+                    logging.info(f'[{self._worker_name}] Updating JobPosting record [{existing.id}] with origin_url [{origin_url}]')
+                    JobPosting.update(session=session, job_posting_id=existing.id, origin_url=origin_url)
+                    session.commit()
+
                 return
 
             job_posting = JobPosting.create(
