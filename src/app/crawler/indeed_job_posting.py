@@ -22,6 +22,10 @@ class IndeedJobPostingCrawler(BaseCrawlerWorker):
                          60)
 
     def _should_crawl(self, url: str) -> bool:
+        # TODO: remove this later
+        if url == "https://ca.indeed.com/company/MSi-Corp-(Bell-Canada)/jobs/Data-Analyst-672c592167ee411b?fccid=183e06e7def5a52c&vjs=3":
+            return False
+
         session = MySQLClient.get_session()
         existing = JobPosting.get_by_origin_url(session, url)
         session.close()
