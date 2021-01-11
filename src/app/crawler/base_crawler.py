@@ -75,7 +75,9 @@ class BaseCrawlerWorker:
 
         logging.info(f'[{self._worker_name}] Original URL {url}, final URL {response["url"]}')
 
-        logging.info(f'[{self._worker_name}] Content {response["content"]}')
+        if not response["content"]:
+            logging.warning(f'[{self._worker_name}] Received empty content')
+
         self._process_response(response["url"], response["content"])
 
     def _delete_message(self, receipt_handle):
