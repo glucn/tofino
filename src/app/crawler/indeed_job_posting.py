@@ -65,8 +65,7 @@ class IndeedJobPostingCrawler(BaseCrawlerWorker):
 
                 return
 
-            uu = self._prepend_netloc_to_relative_url(final_url)
-            logging.info(f'[{self._worker_name}] Creating new JobPosting with [{external_id}], [{uu}], [{origin_url}]...')
+            logging.info(f'[{self._worker_name}] Creating new JobPosting...')
 
             job_posting = JobPosting.create(
                 session=session,
@@ -110,7 +109,4 @@ class IndeedJobPostingCrawler(BaseCrawlerWorker):
         if bool(parsed_url.netloc):
             return url
 
-        parsed_url.netloc = self._SOURCE
-        parsed_url.scheme = 'HTTPS'
-
-        return urlunparse(parsed_url)
+        return urlunparse(parsed_url._replace(netloc=self._SOURCE, scheme='HTTPS'))
