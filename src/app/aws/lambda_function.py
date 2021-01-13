@@ -43,6 +43,9 @@ class Lambda:
                 InvocationType='RequestResponse',
                 Payload=payload.encode('utf-8'),
             )
+
+            logging.info(f'Invoke response [{response}]')
+
             if 'Payload' not in response:
                 # TODO: change back to logging.error
                 logging.warning(f'Invoke response does not contain payload: [{response}]')
