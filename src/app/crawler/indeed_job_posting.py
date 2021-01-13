@@ -65,6 +65,8 @@ class IndeedJobPostingCrawler(BaseCrawlerWorker):
 
                 return
 
+            logging.info(f'[{self._worker_name}] Creating new JobPosting...')
+
             job_posting = JobPosting.create(
                 session=session,
                 source=source,
