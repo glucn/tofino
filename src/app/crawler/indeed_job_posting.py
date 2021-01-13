@@ -109,4 +109,4 @@ class IndeedJobPostingCrawler(BaseCrawlerWorker):
         if bool(parsed_url.netloc):
             return url
 
-        return urlunparse(parsed_url._replace(netloc=self._SOURCE, scheme='HTTPS'))
+        return urlunparse(parsed_url._replace(netloc=self._SOURCE, scheme='https'))
