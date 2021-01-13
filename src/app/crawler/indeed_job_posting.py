@@ -65,7 +65,8 @@ class IndeedJobPostingCrawler(BaseCrawlerWorker):
 
                 return
 
-            logging.info(f'[{self._worker_name}] Creating new JobPosting...')
+            uu = self._prepend_netloc_to_relative_url(final_url)
+            logging.info(f'[{self._worker_name}] Creating new JobPosting with [{external_id}], [{uu}], [{origin_url}]...')
 
             job_posting = JobPosting.create(
                 session=session,
