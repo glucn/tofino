@@ -40,5 +40,6 @@ class SecretManager:
                 return decoded_binary_secret
 
         except ClientError as e:
-            logging.error(e)
+            # TODO: change back to logging.error
+            logging.warning(e)
             raise e

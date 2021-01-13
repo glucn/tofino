@@ -39,7 +39,8 @@ class IndeedJobPostingScraper(BaseScraperWorker):
 
     def _scrape(self, file: str, file_name: str):
         if not file:
-            logging.error(f'[{self._worker_name}] Received an empty file [{file_name}]')
+            # TODO: change back to logging.error
+            logging.warning(f'[{self._worker_name}] Received an empty file [{file_name}]')
             return
 
         soup = BeautifulSoup(file, 'html.parser')
@@ -67,11 +68,13 @@ class IndeedJobPostingScraper(BaseScraperWorker):
             session.commit()
             logging.info(f'[{self._worker_name}] Updated JobPosting record {job_posting.id}')
         except Exception as ex:
-            logging.error(f'[{self._worker_name}] Error updating JobPosting record, rolling back...', ex)
+            # TODO: change back to logging.error
+            logging.warning(f'[{self._worker_name}] Error updating JobPosting record, rolling back...', ex)
             session.rollback()
             raise RetryableException
         except:
-            logging.error(f'[{self._worker_name}] Unexpected exception, rolling back...')
+            # TODO: change back to logging.error
+            logging.warning(f'[{self._worker_name}] Unexpected exception, rolling back...')
             session.rollback()
             raise RetryableException
         finally:

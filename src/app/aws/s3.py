@@ -53,7 +53,8 @@ class S3:
             return byte_value.decode(encoding)
 
         except ClientError as e:
-            logging.error(e)
+            # TODO: change back to logging.error
+            logging.warning(e)
             raise e
 
     @classmethod
@@ -80,5 +81,6 @@ class S3:
             cls._get_client().upload_fileobj(file, bucket, key)
 
         except ClientError as e:
-            logging.error(e)
+            # TODO: change back to logging.error
+            logging.warning(e)
             raise e

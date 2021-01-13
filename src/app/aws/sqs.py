@@ -94,7 +94,8 @@ class SQS:
                 return []
 
         except ClientError as e:
-            logging.error(e)
+            # TODO: change back to logging.error
+            logging.warning(e)
             raise e
 
     @classmethod
@@ -120,7 +121,8 @@ class SQS:
             )
 
         except ClientError as e:
-            logging.error(e)
+            # TODO: change back to logging.error
+            logging.warning(e)
             raise e
 
     @classmethod
@@ -148,5 +150,6 @@ class SQS:
             )
 
         except ClientError as e:
-            logging.error(e)
+            # TODO: change back to logging.error
+            logging.warning(e)
             raise e

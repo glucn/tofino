@@ -39,7 +39,8 @@ class BaseCrawlerWorker:
                     sleep_with_jitter(self._sleep_seconds)
                     continue
                 except NotRetryableException as ex:
-                    logging.error(ex)
+                    # TODO: change back to logging.error
+                    logging.warning(ex)
                 finally:
                     logging.info(f'[{self._worker_name}] Deleting message {message}...')
                     self._delete_message(message.receipt_handle)
@@ -70,7 +71,8 @@ class BaseCrawlerWorker:
         r = Lambda.invoke(crawler['region'], crawler['arn'], json.dumps({'url': url}))
         response = json.loads(r)
         if response['statusCode'] != 200:
-            logging.error(f'Getting URL "{url}" resulted in status code {response["statusCode"]}')
+            # TODO: change back to logging.error
+            logging.warning(f'Getting URL "{url}" resulted in status code {response["statusCode"]}')
             raise Exception
 
         logging.info(f'[{self._worker_name}] Original URL {url}, final URL {response["url"]}')

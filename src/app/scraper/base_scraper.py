@@ -36,13 +36,16 @@ class BaseScraperWorker:
                     logging.info(f'[{self._worker_name}] Deleting message {message}...')
                     self._delete_message(message.receipt_handle)
                 except RetryableException as ex:
-                    logging.error(f'[{self._worker_name}] Got RetryableException', ex)
+                    # TODO: change back to logging.error
+                    logging.warning(f'[{self._worker_name}] Got RetryableException', ex)
                 except NotRetryableException as ex:
-                    logging.error(f'[{self._worker_name}] Got NotRetryableException', ex)
+                    # TODO: change back to logging.error
+                    logging.warning(f'[{self._worker_name}] Got NotRetryableException', ex)
                     logging.info(f'[{self._worker_name}] Deleting message {message}...')
                     self._delete_message(message.receipt_handle)
                 except:
-                    logging.error(f'[{self._worker_name}] Got unexpected exception', sys.exc_info()[0])
+                    # TODO: change back to logging.error
+                    logging.warning(f'[{self._worker_name}] Got unexpected exception', sys.exc_info()[0])
             else:
                 logging.info(f'[{self._worker_name}] No message received')
 

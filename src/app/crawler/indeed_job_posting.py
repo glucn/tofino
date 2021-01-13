@@ -82,11 +82,13 @@ class IndeedJobPostingCrawler(BaseCrawlerWorker):
             logging.info(f'[{self._worker_name}] Created JobPosting record {job_posting.id}')
 
         except Exception as ex:
-            logging.error(f'[{self._worker_name}] Error processing, rolling back...', ex)
+            # TODO: change back to logging.error
+            logging.warning(f'[{self._worker_name}] Error processing, rolling back...', ex)
             session.rollback()
             raise RetryableException
         except:
-            logging.error(f'[{self._worker_name}] Unexpected exception, rolling back...')
+            # TODO: change back to logging.error
+            logging.warning(f'[{self._worker_name}] Unexpected exception, rolling back...')
             session.rollback()
             raise RetryableException
         finally:

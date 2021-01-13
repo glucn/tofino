@@ -44,11 +44,13 @@ class Lambda:
                 Payload=payload.encode('utf-8'),
             )
             if 'Payload' not in response:
-                logging.error(f'Invoke response does not contain payload: [{response}]')
+                # TODO: change back to logging.error
+                logging.warning(f'Invoke response does not contain payload: [{response}]')
                 raise NotRetryableException
 
             return response['Payload'].read()
 
         except ClientError as e:
-            logging.error(e)
+            # TODO: change back to logging.error
+            logging.warning(e)
             raise e
