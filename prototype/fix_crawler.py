@@ -97,8 +97,8 @@ def crawl(url):
 
 
 if __name__ == '__main__':
-    url = 'https://ca.indeed.com/rc/clk?jk=a618664fe1c787f3&fccid=3cd8dc0c6b0df1c6&vjs=3'
-    id = '40010422-f8d0-4081-8185-085cba9af2a1'
+    url = 'https://ca.indeed.com/job/data-entry-analyst-dd4e1204edf15b10'
+    id = '40694490-db56-4915-a60b-c09c9ffc7357'
 
     _, content = crawl(url)
 

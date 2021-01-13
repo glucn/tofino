@@ -1,6 +1,8 @@
 import json
+from urllib.parse import urlparse, urlunparse
 
 import boto3
+import urllib3
 from botocore.exceptions import ClientError
 
 
@@ -72,9 +74,18 @@ def _process_message(url):
     #     'content': response.data
     # })
 
-    r = Lambda.invoke('us-east-1', 'arn:aws:lambda:us-east-1:430714039810:function:download', json.dumps({'url': 'https://ca.indeed.com/rc/clk?jk=e6c34332dcf5a31b&fccid=a499083ea4884469&vjs=3'}))
+    r = Lambda.invoke('ca-central-1', 'arn:aws:lambda:ca-central-1:430714039810:function:tofino-crawler-ca-central-1-CrawlerLambda-1RZPQJLB9QESO', json.dumps({'url': url}))
     print(json.loads(r))
 
 
+def _prepend_netloc_to_relative_url(url: str) -> str:
+    parsed_url = urlparse(url)
+    if bool(parsed_url.netloc):
+        return url
+
+    return urlunparse(parsed_url._replace(netloc='test.com', scheme='HTTPS'))
+
+
 if __name__ == '__main__':
-    _process_message('https://ca.indeed.com/rc/clk?jk=68c29bf549e90565&fccid=354f4c12e3c6bd5a&vjs=3')
+    print(_prepend_netloc_to_relative_url('/viewjob?jk=954c9591a6ddfa19&from=serp&vjs=3'))
+    # _process_message('https://ca.indeed.com/company/MSi-Corp/jobs/Data-Entry-Analyst-dd4e1204edf15b10?fccid=183e06e7def5a52c&vjs=3')
