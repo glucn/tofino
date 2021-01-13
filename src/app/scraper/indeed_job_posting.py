@@ -48,7 +48,7 @@ class IndeedJobPostingScraper(BaseScraperWorker):
         job_title = soup.find("h1", class_="jobsearch-JobInfoHeader-title").string
         job_description = '\n'.join([x for x in soup.find("div", class_="jobsearch-jobDescriptionText").strings])
         company_name = soup.find("div", class_="jobsearch-InlineCompanyRating").contents[0].string
-        location_string = soup.find("div", class_="jobsearch-InlineCompanyRating").contents[-1].string
+        location_string = soup.find("div", class_="jobsearch-JobInfoHeader-subtitle").contents[-1].string
         posted_datetime = _parse_posted_datetime(soup)
 
         logging.info(f'[{self._worker_name}] Updating JobPosting record...')
