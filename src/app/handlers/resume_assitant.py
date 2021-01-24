@@ -36,7 +36,7 @@ class ResumeAssistantHandler(BaseHandler):
         with nlp.disable_pipes('tagger', 'parser'):
             doc = nlp(job_posting)
             for ent in doc.ents:
-                if ent.label_ in ['SKILL', 'ORG']:
+                if ent.label_ == 'SKILL':
                     result.append(
                         {
                             'text': ent.text,
