@@ -45,5 +45,5 @@ class ResumeAssistantHandler(BaseHandler):
                             'end': ent.end
                         }
                     )
-        return json.dumps(result)
+        return json.dumps(result), 200, cls.JSON_HEADER
 
