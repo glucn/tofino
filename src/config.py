@@ -31,10 +31,11 @@ crawlers = [
     #     'region': 'us-west-1',
     #     'arn': 'arn:aws:lambda:us-west-1:430714039810:function:tofino-crawler-us-west-1-CrawlerLambda-1V5OBKOZ3GPWM',
     # },
-    {
-        'region': 'ca-central-1',
-        'arn': 'arn:aws:lambda:ca-central-1:430714039810:function:tofino-crawler-ca-central-1-CrawlerLambda-1RZPQJLB9QESO',
-    },
+    # Returning empty content
+    # {
+    #     'region': 'ca-central-1',
+    #     'arn': 'arn:aws:lambda:ca-central-1:430714039810:function:tofino-crawler-ca-central-1-CrawlerLambda-1RZPQJLB9QESO',
+    # },
     # Returning empty content
     # {
     #     'region': 'ap-northeast-1',
