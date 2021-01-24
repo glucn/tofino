@@ -130,3 +130,6 @@ dmypy.json
 
 # Logging
 *.logs/
+
+# JetBrains IDE
+.idea/

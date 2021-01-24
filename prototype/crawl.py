@@ -2,7 +2,7 @@ import json
 from urllib.parse import urlparse, urlunparse
 
 import boto3
-import urllib3
+# import urllib3
 from botocore.exceptions import ClientError
 
 
