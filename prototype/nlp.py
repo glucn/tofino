@@ -20,7 +20,7 @@ skill_list = ['SAP', 'SAS', 'ERP',  'Workday', 'salesforce', 'Esuite', 'COGNOS',
 
 
 def get_job_description(job_id):
-    url = f'http://tofin-Appli-9CZQN0QUMIV7-2117560493.us-west-2.elb.amazonaws.com/api/v1/jobPosting/{job_id}'
+    url = f'http://52.41.240.242/api/v1/jobPosting/{job_id}'
     with requests.get(url, stream=True, allow_redirects=True) as response:
         if response.status_code != 200:
             raise Exception
@@ -35,7 +35,7 @@ if __name__ == '__main__':
     print(jd)
     print()
 
-    nlp = spacy.load('en_core_web_md')
+    nlp = spacy.load('en_core_web_sm')
 
     ruler = EntityRuler(nlp, phrase_matcher_attr="LOWER")  # add `overwrite_ents=True` if after ner
     patterns = [{"label": "SKILL", "pattern": skill} for skill in skill_list]
@@ -46,4 +46,4 @@ if __name__ == '__main__':
     with nlp.disable_pipes('tagger', 'parser'):
         doc = nlp(jd)
         for ent in doc.ents:
-            print(ent.text, ent.label_)
+            print(ent.text, ent.label_, ent.start, ent.end)

@@ -6,6 +6,7 @@ from flask import Flask, request
 
 from app.crawler import CrawlerManager
 from app.handlers.job_posting import JobPostingHandler
+from app.handlers.resume_assitant import ResumeAssistantHandler
 from app.scraper import ScraperManager
 
 if not os.path.exists("logs/"):
@@ -40,6 +41,11 @@ def update(job_posting_id):
 @APP.route('/api/v1/jobPosting/<job_posting_id>', methods=['DELETE'])
 def delete(job_posting_id):
     return JobPostingHandler.delete(job_posting_id)
+
+
+@APP.route('/api/v1/resume/analyze', methods=['POST'])
+def analyze_resume():
+    return ResumeAssistantHandler.analyze(**request.get_json())
 
 
 if __name__ == '__main__':
