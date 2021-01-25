@@ -41,8 +41,8 @@ class ResumeAssistantHandler(BaseHandler):
                         {
                             'text': ent.text,
                             'label': ent.label_,
-                            'start': ent.start,
-                            'end': ent.end
+                            'start': ent.start_char,
+                            'end': ent.end_char,
                         }
                     )
         return json.dumps(result), 200, cls.JSON_HEADER
