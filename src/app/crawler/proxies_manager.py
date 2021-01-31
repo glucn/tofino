@@ -19,7 +19,6 @@ class ProxiesManager:
         session = MySQLClient.get_session()
         try:
             available_proxies = CrawlerProxy.list_active(session, datetime.now() - DEACTIVATED_WAIT_TIME)
-            logging.info(f'_get_random_proxy {available_proxies}')
             if len(available_proxies) == 0:
                 logging.warning(f'There is no active proxy at the moment')
                 raise RetryableException
