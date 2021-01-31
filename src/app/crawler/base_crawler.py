@@ -1,14 +1,11 @@
 import json
 import logging
-import random
 from typing import Optional
 
-from app.aws import Lambda
 from app.aws.sqs import Message, SQS
-
+from app.crawler.proxies_manager import ProxiesManager
 from app.exceptions import RetryableException, NotRetryableException, MalFormedMessageException
 from app.utils.sleep_with_jitter import sleep_with_jitter
-from config import crawlers
 
 
 class BaseCrawlerWorker:
@@ -18,6 +15,7 @@ class BaseCrawlerWorker:
     _sleep_seconds: int
     _queue_url: str
     _upload_bucket: str
+    _crawler_proxies_manager = ProxiesManager()
 
     def __init__(self, worker_name: str, queue_url: str, upload_bucket: str, sleep_seconds: int = 60):
         self._worker_name = worker_name
@@ -67,20 +65,9 @@ class BaseCrawlerWorker:
         if not self._should_crawl(url):
             return
 
-        crawler = crawlers[random.randrange(len(crawlers))]
-        r = Lambda.invoke(crawler['region'], crawler['arn'], json.dumps({'url': url}))
-        response = json.loads(r)
-        if response['statusCode'] != 200:
-            # TODO: change back to logging.error
-            logging.warning(f'Getting URL "{url}" resulted in status code {response["statusCode"]}')
-            raise Exception
+        content, redirected_url = self._crawler_proxies_manager.crawl(url)
 
-        logging.info(f'[{self._worker_name}] Original URL {url}, final URL {response["url"]}')
-
-        if not response["content"]:
-            logging.warning(f'[{self._worker_name}] Received empty content')
-
-        self._process_response(url, response["url"], response["content"])
+        self._process_response(url, redirected_url, content)
 
     def _delete_message(self, receipt_handle):
         SQS.delete_message(self._queue_url, receipt_handle)
