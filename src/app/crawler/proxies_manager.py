@@ -40,6 +40,9 @@ class ProxiesManager:
 
     def _get_random_proxy(self):
         available_proxies = [p for p in self._proxies if p.is_active()]
+        if len(available_proxies) == 0:
+            logging.warning(f'There is no active proxy at the moment')
+            raise RetryableException
         return available_proxies[random.randrange(len(available_proxies))]
 
     def crawl(self, url: str) -> (str, str):
