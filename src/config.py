@@ -18,35 +18,3 @@ SCRAPER_INDEED_JOB_POSTING_SQS_QUEUE_URL = 'https://sqs.us-west-2.amazonaws.com/
 SCRAPER_INDEED_JOB_SEARCH_RESULT_SQS_QUEUE_URL = 'https://sqs.us-west-2.amazonaws.com/430714039810/tofino-IndeedJobSearchResultNotificationQueue-1C072NHTD2010'
 BUCKET_INDEED_JOB_POSTING = 'tofino-indeedjobpostingbucket-vwf5ud6vdepl'
 BUCKET_INDEED_JOB_SEARCH_RESULT = 'tofino-indeedjobsearchresultbucket-qy5bbfkrksma'
-
-# Crawler Lambda functions
-crawlers = [
-    {
-        'region': 'us-east-2',
-        'arn': 'arn:aws:lambda:us-east-2:430714039810:function:tofino-crawler-us-east-2-CrawlerLambda-VEGL58M9EORC',
-    },
-    {
-        'region': 'us-west-1',
-        'arn': 'arn:aws:lambda:us-west-1:430714039810:function:tofino-crawler-us-west-1-CrawlerLambda-1V5OBKOZ3GPWM',
-    },
-    {
-        'region': 'ca-central-1',
-        'arn': 'arn:aws:lambda:ca-central-1:430714039810:function:tofino-crawler-ca-central-1-CrawlerLambda-1RZPQJLB9QESO',
-    },
-    {
-        'region': 'ap-northeast-1',
-        'arn': 'arn:aws:lambda:ap-northeast-1:430714039810:function:tofino-crawler-ap-northeast-1-CrawlerLambda-2SALLYMVXFR5',
-    },
-    {
-        'region': 'ap-northeast-2',
-        'arn': 'arn:aws:lambda:ap-northeast-2:430714039810:function:tofino-crawler-ap-northeast-2-CrawlerLambda-1VZVOD7T5MA93',
-    },
-    {
-        'region': 'eu-west-1',
-        'arn': 'arn:aws:lambda:eu-west-1:430714039810:function:tofino-crawler-eu-west-1-CrawlerLambda-18TYUVPMF7PIX',
-    },
-    {
-        'region': 'eu-west-2',
-        'arn': 'arn:aws:lambda:eu-west-2:430714039810:function:tofino-crawler-eu-west-2-CrawlerLambda-GHV83A9HOMXW',
-    },
-]
