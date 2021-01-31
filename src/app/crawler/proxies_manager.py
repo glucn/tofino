@@ -3,47 +3,46 @@ import logging
 import random
 from datetime import datetime, timedelta
 
-from typing import List, Optional
-
 from app.aws import Lambda
+from app.db_operator.mysql_client import MySQLClient
 from app.exceptions import RetryableException
-from config import crawlers
+from app.models.crawler_proxy import CrawlerProxy
 
-
-class Proxy:
-    region: str
-    arn: str
-    deactivated: Optional[datetime]
-
-    DEACTIVATED_WAIT_TIME = timedelta(hours=12)
-
-    def __init__(self, region, arn):
-        self.region = region
-        self.arn = arn
-        self.deactivated = None
-
-    def is_active(self):
-        now = datetime.now()
-        return self.deactivated is None or now > self.deactivated + self.DEACTIVATED_WAIT_TIME
-
-    def deactivate(self):
-        self.deactivated = datetime.now()
+DEACTIVATED_WAIT_TIME = timedelta(hours=12)
 
 
 class ProxiesManager:
     """ The manager for proxy Lambda functions """
 
-    _proxies: List[Proxy]
+    @staticmethod
+    def _get_random_proxy() -> CrawlerProxy:
+        session = MySQLClient.get_session()
+        try:
+            available_proxies = CrawlerProxy.list_active(session, datetime.now() - DEACTIVATED_WAIT_TIME)
+            if len(available_proxies) == 0:
+                logging.warning(f'There is no active proxy at the moment')
+                raise RetryableException
+            return available_proxies[random.randrange(len(available_proxies))]
+        finally:
+            session.close()
 
-    def __init__(self):
-        self._proxies = [Proxy(c['region'], c['arn']) for c in crawlers]
-
-    def _get_random_proxy(self):
-        available_proxies = [p for p in self._proxies if p.is_active()]
-        if len(available_proxies) == 0:
-            logging.warning(f'There is no active proxy at the moment')
-            raise RetryableException
-        return available_proxies[random.randrange(len(available_proxies))]
+    @staticmethod
+    def _deactivate_proxy(proxy_id: str):
+        session = MySQLClient.get_session()
+        try:
+            proxy = CrawlerProxy.get(session, proxy_id)
+            CrawlerProxy.update(
+                session=session,
+                proxy_id=proxy_id,
+                deactivated_datetime=datetime.now(),
+                deactivated_count=proxy.deactivated_count + 1,
+            )
+            session.commit()
+        except Exception as ex:
+            session.rollback()
+            raise RetryableException(ex)
+        finally:
+            session.close()
 
     def crawl(self, url: str) -> (str, str):
         crawler_proxy = self._get_random_proxy()
@@ -57,7 +56,7 @@ class ProxiesManager:
 
         if not response["content"]:
             logging.warning(f'Proxy in region [{crawler_proxy.region}] received empty content')
-            crawler_proxy.deactivate()
+            self._deactivate_proxy(crawler_proxy.id)
             raise RetryableException
 
         if 'www.hcaptcha.com' in response["content"]:
