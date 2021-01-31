@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime
 
-from sqlalchemy import Column, String, DateTime, Integer
+from sqlalchemy import Column, String, DateTime, Integer, or_
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
@@ -40,7 +40,7 @@ class CrawlerProxy(Base):
 
     @classmethod
     def list_active(cls, session, last_deactivate):
-        return session.query(cls).filter(cls.deactivated_datetime is None or cls.deactivated_datetime < last_deactivate)
+        return session.query(cls).filter(or_(cls.deactivated_datetime < last_deactivate, cls.deactivated_datetime == None))
 
     @classmethod
     def update(cls, session, proxy_id, **kwargs):
