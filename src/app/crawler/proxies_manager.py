@@ -51,7 +51,7 @@ class ProxiesManager:
         if response['statusCode'] != 200:
             # TODO: change back to logging.error
             logging.warning(f'Getting URL "{url}" resulted in status code {response["statusCode"]}')
-            crawler_proxy.deactivate()
+            self._deactivate_proxy(crawler_proxy.id)
             raise RetryableException
 
         if not response["content"]:
@@ -61,7 +61,7 @@ class ProxiesManager:
 
         if 'www.hcaptcha.com' in response["content"]:
             logging.warning(f'Proxy in region [{crawler_proxy.region}] received hcaptcha check')
-            crawler_proxy.deactivate()
+            self._deactivate_proxy(crawler_proxy.id)
             raise RetryableException
 
         return response["content"], response["url"]
