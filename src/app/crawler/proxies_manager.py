@@ -60,4 +60,9 @@ class ProxiesManager:
             crawler_proxy.deactivate()
             raise RetryableException
 
+        if 'www.hcaptcha.com' in response["content"]:
+            logging.warning(f'Proxy in region [{crawler_proxy.region}] received hcaptcha check')
+            crawler_proxy.deactivate()
+            raise RetryableException
+
         return response["content"], response["url"]
