@@ -1,3 +1,4 @@
+import logging
 from dataclasses import dataclass
 from datetime import datetime
 
@@ -40,6 +41,7 @@ class CrawlerProxy(Base):
 
     @classmethod
     def list_active(cls, session, last_deactivate):
+        logging.info(f'list_active, {last_deactivate}')
         return session.query(cls).filter(or_(cls.deactivated_datetime < last_deactivate, cls.deactivated_datetime == None))
 
     @classmethod
