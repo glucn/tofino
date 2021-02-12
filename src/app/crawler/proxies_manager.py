@@ -54,7 +54,7 @@ class ProxiesManager:
             self._deactivate_proxy(crawler_proxy.id)
             raise RetryableException
 
-        if 'content' not in response:
+        if 'content' not in response or not response['response']:
             logging.warning(f'Proxy in region [{crawler_proxy.region}] received empty content')
             self._deactivate_proxy(crawler_proxy.id)
             raise RetryableException
