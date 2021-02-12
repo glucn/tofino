@@ -54,14 +54,14 @@ class ProxiesManager:
             self._deactivate_proxy(crawler_proxy.id)
             raise RetryableException
 
-        if not response["content"]:
+        if 'content' not in response:
             logging.warning(f'Proxy in region [{crawler_proxy.region}] received empty content')
             self._deactivate_proxy(crawler_proxy.id)
             raise RetryableException
 
-        if 'www.hcaptcha.com' in response["content"]:
+        if 'www.hcaptcha.com' in response['content']:
             logging.warning(f'Proxy in region [{crawler_proxy.region}] received hcaptcha check')
             self._deactivate_proxy(crawler_proxy.id)
             raise RetryableException
 
-        return response["content"], response["url"]
+        return response['content'], response['url']
