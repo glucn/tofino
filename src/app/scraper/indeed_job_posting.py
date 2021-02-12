@@ -11,6 +11,9 @@ from app.scraper.base_scraper import BaseScraperWorker
 
 
 def _parse_posted_datetime(soup: BeautifulSoup) -> datetime:
+    if not soup.find("div", class_="jobsearch-JobMetadataFooter"):
+        return datetime.now()
+
     footers = soup.find("div", class_="jobsearch-JobMetadataFooter").stripped_strings
     for s in footers:
         if s.endswith(" days ago"):
@@ -45,10 +48,26 @@ class IndeedJobPostingScraper(BaseScraperWorker):
 
         soup = BeautifulSoup(file, 'html.parser')
 
-        job_title = soup.find("h1", class_="jobsearch-JobInfoHeader-title").string if soup.find("h1", class_="jobsearch-JobInfoHeader-title") else ''
-        job_description = '\n'.join([x for x in soup.find("div", class_="jobsearch-jobDescriptionText").strings])
-        company_name = soup.find("div", class_="jobsearch-InlineCompanyRating").contents[0].string
-        location_string = soup.find("div", class_="jobsearch-JobInfoHeader-subtitle").contents[-1].string
+        if title := soup.find("h1", class_="jobsearch-JobInfoHeader-title"):
+            job_title = title.string
+        else:
+            job_title = ''
+
+        if jd := soup.find("div", class_="jobsearch-jobDescriptionText"):
+            job_description = '\n'.join([x for x in jd.strings])
+        else:
+            job_description = ''
+
+        if (company := soup.find("div", class_="jobsearch-InlineCompanyRating")) and company.contents:
+            company_name = company.contents[0].string
+        else:
+            company_name = ''
+
+        if subtitle := soup.find("div", class_="jobsearch-JobInfoHeader-subtitle"):
+            location_string = subtitle.contents[-1].string
+        else:
+            location_string = ''
+
         posted_datetime = _parse_posted_datetime(soup)
 
         logging.info(f'[{self._worker_name}] Updating JobPosting record...')

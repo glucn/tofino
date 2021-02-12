@@ -6,15 +6,34 @@ from bs4 import BeautifulSoup
 def parse(file_str: str):
     soup = BeautifulSoup(file_str, 'html.parser')
 
-    job_title = soup.find("h1", class_="jobsearch-JobInfoHeader-title").string
-    job_description = '\n'.join([x for x in soup.find("div", class_="jobsearch-jobDescriptionText").strings])
-    company_name = soup.find("div", class_="jobsearch-InlineCompanyRating").contents[0].string
-    location_string = soup.find("div", class_="jobsearch-JobInfoHeader-subtitle").contents[-1].string
-    posted = soup.find("div", class_="jobsearch-JobMetadataFooter").stripped_strings
+    if title := soup.find("h1", class_="jobsearch-JobInfoHeader-title"):
+        job_title = title.string
+    else:
+        job_title = ''
 
-    # print(job_title)
-    # print(cleansing(job_description))
-    # print(company_name)
+    if jd := soup.find("div", class_="jobsearch-jobDescriptionText"):
+        job_description = '\n'.join([x for x in jd.strings])
+    else:
+        job_description = ''
+
+    if (company := soup.find("div", class_="jobsearch-InlineCompanyRating")) and company.contents:
+        company_name = company.contents[0].string
+    else:
+        company_name = ''
+
+    if subtitle := soup.find("div", class_="jobsearch-JobInfoHeader-subtitle"):
+        location_string = subtitle.contents[-1].string
+    else:
+        location_string = ''
+
+    if footer := soup.find("div", class_="jobsearch-JobMetadataFooter"):
+        posted = footer.stripped_strings
+    else:
+        posted = ''
+
+    print(job_title)
+    print(cleansing(job_description))
+    print(company_name)
     print(location_string)
 
     # print((job_title, job_description))
@@ -38,5 +57,5 @@ def cleansing(s: str):
 
 
 if __name__ == '__main__':
-    with open('4cbaa21f-693f-4531-bb9b-9f44aea2d749.html', 'r') as file:
+    with open('58ede61f-bd31-4607-bd53-3f48849487f9.html', 'r') as file:
         parse(file.read())
