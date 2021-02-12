@@ -6,28 +6,33 @@ from bs4 import BeautifulSoup
 def parse(file_str: str):
     soup = BeautifulSoup(file_str, 'html.parser')
 
-    if title := soup.find("h1", class_="jobsearch-JobInfoHeader-title"):
-        job_title = title.string
+    title_h1 = soup.find("h1", class_="jobsearch-JobInfoHeader-title")
+    if title_h1:
+        job_title = title_h1.string
     else:
         job_title = ''
 
-    if jd := soup.find("div", class_="jobsearch-jobDescriptionText"):
-        job_description = '\n'.join([x for x in jd.strings])
+    jd_div = soup.find("div", class_="jobsearch-jobDescriptionText")
+    if jd_div:
+        job_description = '\n'.join([x for x in jd_div.strings])
     else:
         job_description = ''
 
-    if (company := soup.find("div", class_="jobsearch-InlineCompanyRating")) and company.contents:
-        company_name = company.contents[0].string
+    company_div = soup.find("div", class_="jobsearch-InlineCompanyRating")
+    if company_div and company_div.contents:
+        company_name = company_div.contents[0].string
     else:
         company_name = ''
 
-    if subtitle := soup.find("div", class_="jobsearch-JobInfoHeader-subtitle"):
-        location_string = subtitle.contents[-1].string
+    subtitle_div = soup.find("div", class_="jobsearch-JobInfoHeader-subtitle")
+    if subtitle_div and subtitle_div.contents:
+        location_string = subtitle_div.contents[-1].string
     else:
         location_string = ''
 
-    if footer := soup.find("div", class_="jobsearch-JobMetadataFooter"):
-        posted = footer.stripped_strings
+    footer_div = soup.find("div", class_="jobsearch-JobMetadataFooter")
+    if footer_div:
+        posted = footer_div.stripped_strings
     else:
         posted = ''
 
