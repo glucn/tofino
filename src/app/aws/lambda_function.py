@@ -3,7 +3,7 @@ import logging
 import boto3
 from botocore.exceptions import ClientError
 
-from app.exceptions import NotRetryableException
+from app.exceptions import RetryableException
 
 
 class Lambda:
@@ -49,7 +49,7 @@ class Lambda:
             if 'Payload' not in response:
                 # TODO: change back to logging.error
                 logging.warning(f'Invoke response does not contain payload: [{response}]')
-                raise NotRetryableException
+                raise RetryableException
 
             return response['Payload'].read()
 
