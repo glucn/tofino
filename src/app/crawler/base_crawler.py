@@ -39,6 +39,9 @@ class BaseCrawlerWorker:
                 except NotRetryableException as ex:
                     # TODO: change back to logging.error
                     logging.warning(ex)
+                except Exception as ex:
+                    # TODO: change to logging.error
+                    logging.warning(ex)
                 finally:
                     logging.info(f'[{self._worker_name}] Deleting message {message}...')
                     self._delete_message(message.receipt_handle)
