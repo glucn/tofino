@@ -48,6 +48,8 @@ class ProxiesManager:
         crawler_proxy = self._get_random_proxy()
         r = Lambda.invoke(crawler_proxy.region, crawler_proxy.arn, json.dumps({'url': url}))
         response = json.loads(r)
+        logging.info(f'ProxiesManager crawl response {response}')
+
         if response['statusCode'] != 200:
             # TODO: change back to logging.error
             logging.warning(f'Getting URL "{url}" resulted in status code {response["statusCode"]}')
