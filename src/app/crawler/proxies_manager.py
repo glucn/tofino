@@ -50,7 +50,7 @@ class ProxiesManager:
         response = json.loads(r)
         logging.info(f'ProxiesManager crawl response {response}')
 
-        if response['statusCode'] != 200:
+        if 'statusCode' not in response or response['statusCode'] != 200:
             # TODO: change back to logging.error
             logging.warning(f'Getting URL "{url}" resulted in status code {response["statusCode"]}')
             self._deactivate_proxy(crawler_proxy.id)
