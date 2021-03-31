@@ -1,5 +1,5 @@
 beautifulsoup4==4.9.3
-boto3==1.17.39
+boto3==1.17.41
 click==7.1.2
 flake8==3.8.4
 Flask==1.1.2
