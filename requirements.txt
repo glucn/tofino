@@ -1,7 +1,7 @@
 beautifulsoup4==4.9.3
 boto3==1.18.26
 click==8.0.1
-flake8==3.9.2
+flake8==4.0.0
 Flask==2.0.1
 flask-cors==3.0.10
 invoke==1.6.0
