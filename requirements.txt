@@ -6,7 +6,7 @@ Flask==2.0.2
 flask-cors==3.0.10
 invoke==1.6.0
 itsdangerous==2.0.1
-Jinja2==3.0.1
+Jinja2==3.0.2
 jmespath==0.10.0
 MarkupSafe==2.0.1
 mysqlclient==2.0.3
@@ -15,8 +15,8 @@ requests==2.26.0
 s3transfer==0.5.0
 six==1.16.0
 soupsieve==2.2.1
-SQLAlchemy==1.4.25
+SQLAlchemy==1.4.26
 spacy>=2.3.0,<2.4.0
 https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-2.3.1/en_core_web_sm-2.3.1.tar.gz#egg=en_core_web_sm
 urllib3>=1.26.6
-Werkzeug==2.0.1
+Werkzeug==2.0.2
