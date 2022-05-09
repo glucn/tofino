@@ -4,7 +4,7 @@ click==8.0.3
 flake8==4.0.1
 Flask==2.0.2
 flask-cors==3.0.10
-invoke==1.6.0
+invoke==1.7.0
 itsdangerous==2.0.1
 Jinja2==3.1.2
 jmespath==0.10.0
