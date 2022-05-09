@@ -26,7 +26,7 @@ class IndeedJobSearchResultScraper(BaseScraperWorker):
 
     def _scrape(self, file: str, file_name: str):
         soup = BeautifulSoup(file, 'html.parser')
-        urls = [self._parse_url(x['href']) for x in soup.find_all('a', class_='result')]
+        urls = [self._parse_url(x['href']) for x in soup.find_all('a', class_='jcs-JobTitle')]
 
         for url in urls:
             session = MySQLClient.get_session()
