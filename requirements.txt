@@ -15,7 +15,7 @@ requests==2.27.1
 s3transfer==0.5.2
 six==1.16.0
 soupsieve==2.2.1
-SQLAlchemy==1.4.36
+SQLAlchemy==1.4.44
 spacy>=2.3.0,<2.4.0
 https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-2.3.1/en_core_web_sm-2.3.1.tar.gz#egg=en_core_web_sm
 urllib3>=1.26.6
